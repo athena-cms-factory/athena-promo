@@ -31,7 +31,7 @@ function updateHeaderServerInfo() {
 
 async function openToolServer(type) {
     const settings = await fetchJSON('/settings') || {};
-    let port = type === 'layout' ? (settings.LAYOUT_EDITOR_PORT || 4003) : (settings.MEDIA_MAPPER_PORT || 4004);
+    let port = type === 'layout' ? (settings.LAYOUT_EDITOR_PORT || 5003) : (settings.MEDIA_MAPPER_PORT || 5004);
 
     fetch(`${API}/start-${type}-server`, { method: 'POST' });
 
@@ -42,7 +42,7 @@ async function openToolServer(type) {
 
 async function openDock() {
     const settings = await fetchJSON('/settings') || {};
-    const port = settings.DOCK_PORT || 4002;
+    const port = settings.DOCK_PORT || 5002;
 
     fetch(`${API}/start-dock`, { method: 'POST' });
 
@@ -119,10 +119,10 @@ async function loadServerStatus() {
 
     // Load factory servers (Dashboard, Dock, etc.)
     const servers = [
-        { id: 'dashboard', port: settings.DASHBOARD_PORT || 4001 },
-        { id: 'dock', port: settings.DOCK_PORT || 4002 },
-        { id: 'layout', port: settings.LAYOUT_EDITOR_PORT || 4003 },
-        { id: 'media', port: settings.MEDIA_MAPPER_PORT || 4004 }
+        { id: 'dashboard', port: settings.DASHBOARD_PORT || 5001 },
+        { id: 'dock', port: settings.DOCK_PORT || 5002 },
+        { id: 'layout', port: settings.LAYOUT_EDITOR_PORT || 5003 },
+        { id: 'media', port: settings.MEDIA_MAPPER_PORT || 5004 }
     ];
 
     for (const server of servers) {
