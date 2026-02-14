@@ -895,22 +895,64 @@ app.post('/api/servers/stop/:type', async (req, res) => {
 // GET ALL ACTIVE SITE SERVERS (detect via registry and fallback)
 app.get('/api/servers/active', (req, res) => {
     try {
+        // 1. Get managed processes
         const active = pm.listActive();
-        const activeServers = [];
-        
+        const activeMap = new Map(); // Use Map to prevent duplicates (port as key)
+
+        // Helper to add server to map
+        const addServer = (port, info) => {
+            if (!activeMap.has(port)) {
+                activeMap.set(port, info);
+            }
+        };
+
+        // Add managed processes first
         for (const port in active) {
             const info = active[port];
-            activeServers.push({
+            addServer(parseInt(port), {
                 siteName: info.id,
                 port: parseInt(port),
                 pid: info.pid,
                 type: info.type,
-                url: `http://localhost:${port}/${info.id}/`
+                url: info.type === 'preview' ? `http://localhost:${port}/${info.id}/` : `http://localhost:${port}/`
             });
         }
 
+        // 2. Discover unmanaged processes (started via CLI)
+        const sitesDir = path.resolve(root, '../sites');
+        if (fs.existsSync(sitesDir)) {
+            const sites = fs.readdirSync(sitesDir).filter(f => fs.statSync(path.join(sitesDir, f)).isDirectory() && !f.startsWith('.'));
+            
+            for (const site of sites) {
+                const siteDir = path.join(sitesDir, site);
+                const port = getSitePort(site, siteDir); // Reuse existing helper
+
+                // Skip if already found via ProcessManager
+                if (activeMap.has(port)) continue;
+
+                // Check if port is in use
+                try {
+                    // fuser returns exit code 0 if socket is open, 1 if not
+                    execSync(`fuser ${port}/tcp`, { stdio: 'ignore' });
+                    
+                    // If we get here, the port is open
+                    addServer(port, {
+                        siteName: site,
+                        port: port,
+                        pid: 'external', // Unknown PID
+                        type: 'preview', // Assume preview/dev server
+                        url: `http://localhost:${port}/${site}/`
+                    });
+                } catch (e) {
+                    // Port not in use, skip
+                }
+            }
+        }
+
+        const activeServers = Array.from(activeMap.values());
         res.json({ servers: activeServers });
     } catch (e) {
+        console.error("Error in /api/servers/active:", e);
         res.status(500).json({ error: e.message });
     }
 });
