@@ -17,6 +17,38 @@ const DockFrame = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const iframeRef = useRef(null);
 
+  // Sidebar Resizing State
+  const [leftWidth, setLeftWidth] = useState(260);
+  const [rightWidth, setRightWidth] = useState(260);
+  const isResizingLeft = useRef(false);
+  const isResizingRight = useRef(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isResizingLeft.current) {
+        const newWidth = Math.min(Math.max(180, e.clientX), 450);
+        setLeftWidth(newWidth);
+      }
+      if (isResizingRight.current) {
+        const newWidth = Math.min(Math.max(180, window.innerWidth - e.clientX), 450);
+        setRightWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      isResizingLeft.current = false;
+      isResizingRight.current = false;
+      document.body.classList.remove('select-none');
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
   // Undo/Redo State
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -696,15 +728,23 @@ const DockFrame = () => {
       {/* Main Dock Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar - Design Controls */}
-        <aside className="w-60 lg:w-64 xl:w-72 2xl:w-80 bg-white border-r border-slate-200 overflow-y-auto">
+        <aside 
+          style={{ width: `${leftWidth}px` }}
+          className="bg-white border-r border-slate-200 overflow-y-auto relative flex-shrink-0"
+        >
           <DesignControls
             onColorChange={updateColor}
             siteStructure={siteStructure}
           />
+          {/* Left Resizer */}
+          <div 
+            onMouseDown={() => { isResizingLeft.current = true; document.body.classList.add('select-none'); }}
+            className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-blue-400 transition-colors z-50"
+          />
         </aside>
 
         {/* Center - Site Preview in Iframe */}
-        <main className="flex-1 bg-slate-200 p-8 flex items-center justify-center relative">
+        <main className="flex-1 bg-slate-200 p-4 lg:p-8 flex items-center justify-center relative min-w-0">
           <div className="h-full w-full bg-white rounded-lg shadow-2xl overflow-hidden relative">
             <iframe
               key={refreshKey}
@@ -742,10 +782,19 @@ const DockFrame = () => {
         </main>
 
         {/* Right Sidebar - Section Tools */}
-        <aside className="w-60 lg:w-64 xl:w-72 2xl:w-80 bg-white border-l border-slate-200 overflow-y-auto p-4">
-
-          {/* Cloud Sync (v6.8) */}
-          <div className="mb-6 pb-6 border-b border-slate-100 space-y-2">
+        <aside 
+          style={{ width: `${rightWidth}px` }}
+          className="bg-white border-l border-slate-200 overflow-y-auto relative flex-shrink-0"
+        >
+          {/* Right Resizer */}
+          <div 
+            onMouseDown={() => { isResizingRight.current = true; document.body.classList.add('select-none'); }}
+            className="absolute left-0 top-0 w-1 h-full cursor-col-resize hover:bg-blue-400 transition-colors z-50"
+          />
+          
+          <div className="p-4">
+            {/* Cloud Sync (v6.8) */}
+            <div className="mb-6 pb-6 border-b border-slate-100 space-y-2">
             {selectedSite?.governance_mode === 'client-mode' ? (
               <button
                 disabled
