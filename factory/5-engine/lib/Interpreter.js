@@ -1,21 +1,16 @@
 /**
  * Interpreter.js
  * @description Translates natural language prompts into structured Athena Factory commands.
- * Uses Gemini API to map user intent to SiteTypes, Layouts, and Styles.
+ * Uses Athena AI Engine for robust, multi-provider waterfall support.
  */
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithAI } from '../ai-engine.js';
 import fs from 'fs';
 import path from 'path';
 
 export class AthenaInterpreter {
-    constructor(config) {
-        this.config = config;
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error("GEMINI_API_KEY niet gevonden in .env");
-        
-        const genAI = new GoogleGenerativeAI(apiKey);
-        this.model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    constructor(configManager) {
+        this.configManager = configManager;
     }
 
     /**
@@ -39,14 +34,9 @@ export class AthenaInterpreter {
             }
         `;
 
-        const result = await this.model.generateContent([systemInstruction, `GEBRUIKER PROMPT: ${prompt}`]);
-        const response = await result.response;
-        let text = response.text();
-        
-        // Clean markdown code blocks if AI added them
-        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        
-        return JSON.parse(text);
+        const result = await generateWithAI(`${systemInstruction}\n\nGEBRUIKER PROMPT: ${prompt}`, { isJson: true });
+        if (!result) throw new Error("AI kon geen geldige configuratie genereren.");
+        return result;
     }
 
     /**
@@ -70,11 +60,8 @@ export class AthenaInterpreter {
             }
         `;
 
-        const result = await this.model.generateContent([systemInstruction, `INSTRUCTIE: ${instruction}`]);
-        const response = await result.response;
-        let text = response.text();
-        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        
-        return JSON.parse(text);
+        const result = await generateWithAI(`${systemInstruction}\n\nINSTRUCTIE: ${instruction}`, { isJson: true });
+        if (!result) throw new Error("AI kon de update-instructie niet interpreteren.");
+        return result;
     }
 }

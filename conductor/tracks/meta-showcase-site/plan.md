@@ -1,0 +1,1 @@
+- [ ] Generate base site via athena-agent CLI\n- [ ] Refine content using AI Interpreter (waarde-propositie uitleggen)\n- [ ] Sync to Google Sheet\n- [ ] Deploy naar GitHub Pages

@@ -9,10 +9,10 @@ import { validateProjectName } from '../factory.js';
 import { execSync } from 'child_process';
 
 export class ProjectController {
-    constructor(config) {
-        this.config = config;
-        this.root = config.paths.root;
-        this.inputDir = config.paths.input;
+    constructor(configManager) {
+        this.configManager = configManager;
+        this.root = configManager.get('paths.root');
+        this.inputDir = configManager.get('paths.input');
     }
 
     /**
@@ -74,10 +74,7 @@ export class ProjectController {
         for (const filePath of filesToRead) {
             const content = fs.readFileSync(filePath, 'utf8');
             const fileName = path.basename(filePath);
-            fullContent += `--- FILE: ${fileName} ---
-${content}
-
-`;
+            fullContent += `--- FILE: ${fileName} ---\n${content}\n\n`;
         }
 
         return { content: fullContent };
@@ -92,11 +89,7 @@ ${content}
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
         const filePath = path.join(dir, filename);
-        const separator = fs.existsSync(filePath) ? "
-
---- NIEUWE INVOER ---
-
-" : "";
+        const separator = fs.existsSync(filePath) ? "\n\n--- NIEUWE INVOER ---\n\n" : "";
         fs.appendFileSync(filePath, separator + text, 'utf8');
         return { success: true, message: "Tekst succesvol toegevoegd aan " + filename };
     }
@@ -109,13 +102,11 @@ ${content}
         const dir = path.join(this.inputDir, id, 'input');
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-        const urlList = urls.split(/[
-,]+/).map(u => u.trim()).filter(u => u.length > 0);
+        const urlList = urls.split(/[\n,]+/).map(u => u.trim()).filter(u => u.length > 0);
         if (urlList.length === 0) throw new Error("Geen geldige URLs gevonden.");
 
         const filePath = path.join(dir, 'urls.txt');
-        fs.writeFileSync(filePath, urlList.join('
-'), 'utf8');
+        fs.writeFileSync(filePath, urlList.join('\n'), 'utf8');
         return { success: true, message: `${urlList.length} URL(s) opgeslagen in urls.txt` };
     }
 
@@ -123,9 +114,9 @@ ${content}
      * Create a data source project from an existing site's JSON data
      */
     createFromSite(sourceSiteName, targetProjectName) {
-        const tool = path.join(this.config.paths.factory, '5-engine', 'site-to-datasource-generator.js');
+        const tool = path.join(this.configManager.get('paths.factory'), '5-engine', 'site-to-datasource-generator.js');
         const output = execSync(`"${process.execPath}" "${tool}" "${sourceSiteName}" "${targetProjectName}"`, {
-            cwd: this.config.paths.factory,
+            cwd: this.configManager.get('paths.factory'),
             env: { ...process.env }
         }).toString();
         return { success: true, message: `Data Bron '${targetProjectName}' succesvol gegenereerd!`, details: output };

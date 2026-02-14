@@ -11,6 +11,7 @@ import { AthenaInterpreter } from './5-engine/lib/Interpreter.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,6 +72,13 @@ async function run() {
             case 'sync-to-sheet':
                 const syncRes = await siteCtrl.syncToSheet(args[0]);
                 console.log(JSON.stringify(syncRes, null, 2));
+                break;
+
+            case 'provision-sheet':
+                // Usage: athena-agent provision-sheet <projectName>
+                const tool = path.join(root, 'factory/5-engine/auto-sheet-provisioner.js');
+                const output = execSync(`"${process.execPath}" "${tool}" "${args[0]}"`, { cwd: path.join(root, 'factory') }).toString();
+                console.log(JSON.stringify({ success: true, details: output }, null, 2));
                 break;
 
             case 'pull-from-sheet':

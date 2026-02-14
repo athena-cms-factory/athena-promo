@@ -2,4 +2,4 @@
 - [x] Design athena-agent.js CLI architecture
 - [x] Implement "Create from Prompt" flow (LLM -> JSON -> Factory)
 - [x] Implement "Update from Instruction" flow (Sheets-First)
-- [ ] Design Mail/Webhook Gateway architecture
+- [x] Design Mail/Webhook Gateway architecture (Native Athena Gateway)

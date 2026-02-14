@@ -12,12 +12,12 @@ import { AthenaDataManager } from '../lib/DataManager.js';
 import { AthenaInterpreter } from '../lib/Interpreter.js';
 
 export class SiteController {
-    constructor(config) {
-        this.config = config;
-        this.root = config.paths.root;
-        this.sitesDir = config.paths.sites;
-        this.dataManager = new AthenaDataManager(config.paths.factory);
-        this.interpreter = new AthenaInterpreter(config);
+    constructor(configManager) {
+        this.configManager = configManager;
+        this.root = configManager.get('paths.root');
+        this.sitesDir = configManager.get('paths.sites');
+        this.dataManager = new AthenaDataManager(configManager.get('paths.factory'));
+        this.interpreter = new AthenaInterpreter(configManager);
     }
 
     /**
@@ -30,7 +30,7 @@ export class SiteController {
         const settings = this.dataManager.loadJSON(path.join(paths.dataDir, 'site_settings.json')) || {};
         
         const context = {
-            availableFiles: fs.readdirSync(paths.dataDir).filter(f => f.endsWith('.json')),
+            availableFiles: fs.existsSync(paths.dataDir) ? fs.readdirSync(paths.dataDir).filter(f => f.endsWith('.json')) : [],
             basisSample: basisData[0],
             settingsSample: Array.isArray(settings) ? settings[0] : settings
         };
@@ -156,9 +156,9 @@ export class SiteController {
      * Run a maintenance script (e.g. sync-deployment-status)
      */
     runScript(script, args) {
-        const scriptPath = path.join(this.config.paths.factory, '5-engine', script);
+        const scriptPath = path.join(this.configManager.get('paths.factory'), '5-engine', script);
         const output = execSync(`"${process.execPath}" "${scriptPath}" ${args.map(a => `"${a}"`).join(' ')}`, {
-            cwd: this.config.paths.factory,
+            cwd: this.configManager.get('paths.factory'),
             env: { ...process.env }
         }).toString();
         return { success: true, details: output };
