@@ -7,9 +7,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Research & Discovery' (Protocol in workflow.md)
 
 ## Phase 2: Implement Responsive Grid Layout
-- [ ] Task: Create a failing test for the layout logic (if applicable via DOM/Snapshots)
-- [ ] Task: Update the site card container to use a responsive grid (e.g., `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`)
-- [ ] Task: Verify that site cards wrap into columns on wider screens
+- [x] Task: Update the site card container to use a responsive grid (e.g., `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`)
+- [x] Task: Verify that site cards wrap into columns on wider screens
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Implement Responsive Grid Layout' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Implement Responsive Grid Layout' (Protocol in workflow.md)
 
 ## Phase 3: Fix Live Link Navigation
