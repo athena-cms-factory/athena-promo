@@ -83,8 +83,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ATHENA_DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
           API_TOKEN_GITHUB: ${{ secrets.ATHENA_DEPLOY_TOKEN || secrets.GITHUB_TOKEN }}
-          # OWNER dynamisch bepalen op basis van de huidige repository
-          OWNER: ${{ github.repository_owner }}
+          # Forceer push naar de organisatie
+          OWNER: athena-cms-factory
         run: |
           for SITE in ${{ steps.detect.outputs.sites }}; do
             echo "📦 Verwerken van site: $SITE"
