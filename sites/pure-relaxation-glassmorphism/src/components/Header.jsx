@@ -11,7 +11,7 @@ function Header({ siteSettings = {} }) {
   const logoChar = (settings.logo_text || siteName).charAt(0).toUpperCase();
 
   // Use a reliable default logo if site_logo_image is missing
-  const displayLogo = settings.site_logo_image || "athena-icon.svg";
+  const displayLogo = settings.site_logo_image || "./athena-icon.svg";
 
   const handleScroll = (e) => {
     const url = settings.header_cta_url || "#contact";
