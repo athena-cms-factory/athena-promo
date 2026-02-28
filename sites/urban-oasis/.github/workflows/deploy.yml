@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
           version: 9
 
@@ -30,6 +30,15 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+
+      - name: Fetch latest data from Google Sheets (Optional)
+        run: |
+          if [ -f "project-settings/url-sheet.json" ]; then
+            echo "✅ Google Sheet config gevonden. Synchroniseren..."
+            pnpm fetch-data || echo "⚠️ Sync mislukt, we gaan door met lokale data."
+          else
+            echo "ℹ️ Geen Google Sheet gekoppeld. We gebruiken de data in de repository."
+          fi
 
       - name: Build project
         run: pnpm build

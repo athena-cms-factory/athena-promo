@@ -1,6 +1,6 @@
 # 🌐 Athena CMS Sites Overzicht
 
-Laatst bijgewerkt: 28/2/2026, 15:21:03
+Laatst bijgewerkt: 28/2/2026, 15:50:09
 
 ## 📋 Status Overzicht
 
