@@ -5,8 +5,8 @@
     "siteType": "jets-type",
     "generatedAt": "2026-02-27T10:00:00.000Z",
     "governance_mode": "dev-mode",
-    "repoUrl": null,
-    "liveUrl": null,
+    "repoUrl": "https://github.com/athena-cms-factory/jets-archive",
+    "liveUrl": "https://athena-cms-factory.github.io/jets-archive",
     "port": 6225
   },
   {
