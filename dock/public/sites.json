@@ -1,5 +1,15 @@
 [
   {
+    "id": "jets-archive",
+    "name": "jets-archive",
+    "siteType": "jets-type",
+    "generatedAt": "2026-02-27T10:00:00.000Z",
+    "governance_mode": "dev-mode",
+    "repoUrl": null,
+    "liveUrl": null,
+    "port": 6225
+  },
+  {
     "id": "portfolio-kbm",
     "name": "portfolio-kbm",
     "siteType": "portfolio-kbm",

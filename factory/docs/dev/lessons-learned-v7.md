@@ -13,6 +13,7 @@
 *   **Style Binding Conflicts**: When switching themes or upgrading to v7+, old entries in `style_bindings.json` (e.g., fixed `fontSize: "16px"` for headers) can break the new design. 
 *   **Reset Strategy**: During major layout shifts, consider clearing `style_bindings.json` to allow the new theme tokens to take precedence.
 
-## 5. Visual Editor Interaction
-*   **Explicit Field Typing**: Relying on key-name heuristics (e.g., "link" or "image") to determine the field type for visual editors is brittle. Always use explicit attributes like `data-dock-type="link"` or `data-dock-type="media"` in components to ensure the correct editor modal is triggered.
-*   **Functional Testing**: Users need to test links in the visual editor. Implement `Shift + Click` logic in the dock-connector to allow normal event propagation while maintaining the primary click-to-edit behavior.
+## 6. Routing & Navigation (SPA)
+*   **Router Necessity**: Components utilizing `Link` or other hooks from `react-router-dom` (like `Header.jsx`) MUST be wrapped in a `<Router>` (typically `HashRouter` for subfolder compatibility). Failure to do so will result in a white-page runtime crash.
+*   **Docked Site Scaffolding**: Ensure `App.jsx` in docked sites includes `HashRouter`, `DisplayConfigProvider`, and `StyleProvider` to support all ecosystem features.
+

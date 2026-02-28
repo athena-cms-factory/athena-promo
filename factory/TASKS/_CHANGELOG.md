@@ -1,5 +1,16 @@
 # Changelog - Athena CMS Factory
 
+## [7.9.7] - 2026-02-28
+### Fixed
+- **Jets Archive Restoration**: Resolved a critical white-page crash in `jets-archive` by wrapping the `App` component in a `HashRouter`. This was necessary due to the `Header` component's use of `Link` from `react-router-dom`.
+- **Dock Compatibility**: Integrated `DisplayConfigProvider` and `StyleProvider` into `jets-archive` to ensure full compatibility with visual editing and theme tokens.
+- **Header Prop Alignment**: Fixed a mismatch where the `Header` component expected `siteSettings` but was receiving `data`.
+- **Registry Port Correction**: Updated the centralized `sites.json` to reflect the actual port (6225) used by the `jets-archive` Vite server.
+
+### Changed
+- **Asset Localization (Jets)**: Successfully migrated 48 jet images from external Wikimedia URLs to local storage in the project's `public/` directory. This improves loading speed, privacy, and long-term asset availability.
+- **Missing Asset Recovery**: Identified and downloaded missing images for `p-80` and `f-84` to ensure a complete visual catalog.
+
 ## [7.9.6] - 2026-02-21
 ### Added
 - **Athena URL Manager**: Rebranded the Live Manager to "URL Manager" and added a dedicated column for **Local URLs** with direct preview/play support.

@@ -328,10 +328,21 @@ export class ProjectGenerator {
                 path.join(this.paths.modelBoilerplate, 'components', comp),
                 path.join(this.paths.trackBoilerplate, 'shared/components', comp),
                 path.join(this.paths.globalShared, 'components', comp),
-                path.join(this.tplRoot, 'components', comp) // Add this new path
+                path.join(this.tplRoot, 'components', comp)
             ].find(fs.existsSync);
             if (src) fs.writeFileSync(path.join(this.projectDir, 'src/components', comp), this.engine.transform(fs.readFileSync(src, 'utf8'), comp));
         });
+
+        // Copy custom components from sitetype
+        const customCompDir = path.join(this.paths.sourceLayout, 'components');
+        if (fs.existsSync(customCompDir)) {
+            const customFiles = fs.readdirSync(customCompDir).filter(f => f.endsWith('.jsx'));
+            customFiles.forEach(comp => {
+                const src = path.join(customCompDir, comp);
+                fs.writeFileSync(path.join(this.projectDir, 'src/components', comp), this.engine.transform(fs.readFileSync(src, 'utf8'), comp));
+            });
+        }
+
         [path.join(this.paths.globalShared, 'components/ui'), path.join(this.paths.trackBoilerplate, 'shared/components/ui')].forEach(src => {
             if (fs.existsSync(src)) fs.cpSync(src, path.join(this.projectDir, 'src/components/ui'), { recursive: true });
         });

@@ -1,5 +1,17 @@
 # ✅ DONE - Athena CMS
 
+## Maintenance & Localization (Jets Archive) - 2026-02-28
+- [x] **Jets Archive Restoration**
+    - Hersteld van white-page crash door `HashRouter` toe te voegen in `App.jsx`.
+    - Geïntegreerd `DisplayConfigProvider` en `StyleProvider` voor volledige Dock-compatibiliteit.
+    - Gecorrigeerd van Header props (`siteSettings`).
+- [x] **Asset Localisatie**
+    - Gemigreerd van 48 jet-afbeeldingen van externe Wikimedia URLs naar lokale bestanden in `public/`.
+    - Gedownload van ontbrekende afbeeldingen (`p-80`, `f-84`) om 100% dekking te garanderen.
+    - Bijgewerkt van `jets.json` met directe lokale paden.
+- [x] **Registry Fix**
+    - Bijgewerkt van `dock/public/sites.json` met de correcte poort (6225) voor `jets-archive`.
+
 ## Live & URL Manager & Link Resolution - 2026-02-21
 - [x] **Athena URL Manager GUI**
     - Herbenoemd van Live Manager naar URL Manager voor breder bereik.
