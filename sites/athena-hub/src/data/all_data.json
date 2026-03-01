@@ -287,12 +287,23 @@
       "light_bg_color": "#d0d1d2",
       "light_header_color": "#d0d1d2",
       "hero_overlay_opacity": "0",
-      "light_hero_bg_color": "#e7fdfc"
+      "light_hero_bg_color": "#e7fdfc",
+      "header_cta": {
+        "label": "Contact",
+        "url": "#intro"
+      }
     }
   ],
   "style_bindings": {
     "site_name": "athena-hub",
-    "hero:0:image": "F7136Iz0-1770395616777.jpeg",
+    "hero:0:image": {
+      "bold": false,
+      "italic": false,
+      "fontSize": "16px",
+      "textAlign": "left",
+      "fontFamily": "sans-serif",
+      "textShadow": false
+    },
     "hero:0:title": {
       "bold": false,
       "italic": false,

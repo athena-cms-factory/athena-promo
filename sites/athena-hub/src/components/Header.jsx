@@ -12,14 +12,6 @@ function Header({ siteSettings = {} }) {
   // Use a reliable default logo if site_logo_image is missing
   const displayLogo = settings.site_logo_image || "athena-icon.svg";
 
-  const handleScroll = (e) => {
-    const url = settings.header_cta_url || "#contact";
-    if (url.startsWith('#')) {
-      e.preventDefault();
-      document.getElementById(url.substring(1))?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   const scrollToTop = (e) => {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -72,13 +64,12 @@ function Header({ siteSettings = {} }) {
             {settings.header_show_button !== false && (
               <EditableLink 
                 as="button"
-                label={settings.header_cta_label || "Contact"}
-                url={settings.header_cta_url || "#contact"}
+                url={settings.header_cta || settings.header_cta_url || "#contact"}
+                label={settings.header_cta?.label || settings.header_cta_label || "Contact"}
                 table="site_settings"
                 field="header_cta"
                 id={0}
                 className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-accent transition-colors"
-                onClick={handleScroll}
               />
             )}
         </div>

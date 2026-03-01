@@ -760,6 +760,7 @@ const DockFrame = () => {
 
           {editingItem && (
             <VisualEditor
+              key={`${editingItem.binding?.file || 'file'}-${editingItem.binding?.key || 'key'}-${editingItem.binding?.index || 0}`}
               item={editingItem}
               selectedSite={selectedSite}
               onSave={handleEditorSave}

@@ -39,17 +39,10 @@ const HeroSection = ({ sectionName, items, sectionStyle }) => {
           <div className="flex flex-wrap justify-center gap-4">
             <EditableLink
               as="button"
-              label={hero.cta_text || hero.cta_label || "Contact"}
-              url={hero.cta_url || "#showcase"}
-              cmsBind={{ file: sectionName, index: 0, key: hero.cta_text ? 'cta_text' : (hero.cta_label ? 'cta_label' : 'cta') }}
+              url={hero.cta || hero.cta_url || "#showcase"}
+              label={hero.cta?.label || hero.cta_text || hero.cta_label || "Bekijk de Demo's"}
+              cmsBind={{ file: sectionName, index: 0, key: 'cta' }}
               className="bg-[var(--color-button-bg)] text-white px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:opacity-90 transition-all transform hover:scale-105"
-              onClick={(e) => {
-                const url = hero.cta_url || "#showcase";
-                if (url.startsWith('#')) {
-                  e.preventDefault();
-                  document.getElementById(url.substring(1))?.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
             />
           </div>
         </div>

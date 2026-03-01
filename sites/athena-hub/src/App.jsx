@@ -9,23 +9,16 @@ import Footer from './components/Footer';
 import { DisplayConfigProvider } from './components/DisplayConfigContext';
 
 const App = ({ data: initialData }) => {
-  // 1. Initialiseer state met data + eventuele live-overrides uit de sessie
   const [data, setData] = useState(() => {
     const saved = sessionStorage.getItem('athena_live_overrides');
     if (saved) {
       try {
         const overrides = JSON.parse(saved);
-        console.log('🛡️ [App] Restoring live overrides:', overrides);
         const merged = { ...initialData };
-        
         Object.keys(overrides).forEach(file => {
           if (merged[file]) {
-            if (Array.isArray(merged[file])) {
-              // Merge in de eerste rij van het array
-              merged[file] = [{ ...merged[file][0], ...overrides[file] }];
-            } else {
-              merged[file] = { ...merged[file], ...overrides[file] };
-            }
+            if (Array.isArray(merged[file])) merged[file] = [{ ...merged[file][0], ...overrides[file] }];
+            else merged[file] = { ...merged[file], ...overrides[file] };
           }
         });
         return merged;
@@ -39,24 +32,19 @@ const App = ({ data: initialData }) => {
       const { type, key, value, file, index } = event.data;
       if (!type) return;
 
+      // 1. Luister naar updates van de Dock
       if (type.startsWith('DOCK_UPDATE_')) {
         setData(prev => {
           const newData = { ...prev };
           const settingsKey = file || 'site_settings';
-          
           if (newData[settingsKey]) {
-            let updatedValue;
             if (Array.isArray(newData[settingsKey])) {
               const row = { ...newData[settingsKey][index || 0], [key]: value };
               newData[settingsKey] = [...newData[settingsKey]];
               newData[settingsKey][index || 0] = row;
-              updatedValue = row;
             } else {
               newData[settingsKey] = { ...newData[settingsKey], [key]: value };
-              updatedValue = newData[settingsKey];
             }
-
-            // Save override
             const currentOverrides = JSON.parse(sessionStorage.getItem('athena_live_overrides') || '{}');
             if (!currentOverrides[settingsKey]) currentOverrides[settingsKey] = {};
             currentOverrides[settingsKey][key] = value;
@@ -65,11 +53,26 @@ const App = ({ data: initialData }) => {
           return newData;
         });
       }
+
+      // 2. [NIEUW]: Beantwoord vragen van de Dock (v33 Debug Bridge)
+      if (type === 'DOCK_REQUEST_SYNC') {
+        console.log('📡 [App] Responding to data sync request for:', key);
+        const sourceFile = file || 'site_settings';
+        const sourceData = data[sourceFile];
+        const row = Array.isArray(sourceData) ? sourceData[index || 0] : sourceData;
+        
+        window.parent.postMessage({
+          type: 'SITE_SYNC_RESPONSE',
+          key,
+          value: row ? row[key] : null,
+          fullRow: row
+        }, '*');
+      }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [data]);
 
   const primaryTable = Object.keys(data)[0];
 
@@ -78,12 +81,10 @@ const App = ({ data: initialData }) => {
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500">
           <StyleInjector siteSettings={data['site_settings']} />
-          <Header primaryTable={data[primaryTable]} tableName={primaryTable} siteSettings={data['site_settings']} />
-
+          <Header siteSettings={data['site_settings']} />
           <main style={{ paddingTop: 'var(--content-top-offset, 0px)' }}>
             <Section data={data} />
           </main>
-
           <Footer data={data} />
         </div>
       </Router>

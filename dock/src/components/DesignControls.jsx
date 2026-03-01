@@ -151,23 +151,37 @@ export default function DesignControls({ onColorChange, siteStructure }) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SAVING...';
 
     try {
-      // URL Opschonen: verwijder eventuele query parameters zoals ?t=0
       const rawUrl = siteStructure?.url || window.location.origin;
       const cleanBase = rawUrl.split('?')[0].replace(/\/$/, '');
       const apiUrl = `${cleanBase}/__athena/update-json`;
 
-      console.log("🚀 Attempting save to:", apiUrl);
+      console.log("🚀 Initializing Layout & Color Save to:", apiUrl);
 
-      // We focussen nu op de content_top_offset als test
+      // We verzamelen ALLEEN de layout en kleur data
+      // We filteren de content-keys (links/teksten) eruit om corruptie te voorkomen
+      const filteredData = {};
+      Object.keys(localColors).forEach(key => {
+        if (key.includes('color') || key.includes('offset') || key.includes('header_') || key.includes('hero_')) {
+          // Check of het geen link-object is dat we per ongeluk als string hebben
+          if (typeof localColors[key] !== 'object') {
+            filteredData[key] = localColors[key];
+          }
+        }
+      });
+
+      const payload = {
+        file: 'site_settings',
+        index: 0,
+        data: { 
+          ...filteredData, 
+          content_top_offset: sliderValues.content_top_offset 
+        }
+      };
+
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          file: 'site_settings',
-          index: 0,
-          key: 'content_top_offset',
-          value: sliderValues.content_top_offset
-        })
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {

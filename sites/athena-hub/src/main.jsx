@@ -22,6 +22,9 @@ async function init() {
     data['display_config'] = data['display_config'] || { sections: {} };
     data['layout_settings'] = data['layout_settings'] || {};
 
+    // v32: Store data globally for component discovery
+    window.athenaData = data;
+
     if (window.athenaScan) window.athenaScan(data);
   } catch (e) {
     console.error("Data laad fout:", e);

@@ -12,24 +12,37 @@ export default defineConfig({
       name: 'athena-api-middleware',
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
-          if (req.url.includes('/__athena/update-json') && req.method === 'POST') {
+          if (req.url.includes('__athena/update-json') && req.method === 'POST') {
             let body = '';
             req.on('data', chunk => { body += chunk.toString(); });
             req.on('end', () => {
               try {
-                const data = JSON.parse(body);
-                const { file, index, key, value } = data;
+                const payload = JSON.parse(body);
+                const { file, index, key, value, data } = payload;
+                
                 const dataDir = path.resolve(__dirname, 'src/data');
                 const filePath = path.join(dataDir, `${file}.json`);
                 
                 if (fs.existsSync(filePath)) {
-                  const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                  if (Array.isArray(content)) content[index || 0][key] = value;
-                  else content[key] = value;
+                  let content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                  const isArray = Array.isArray(content);
+                  const targetRow = isArray ? content[index || 0] : content;
+
+                  if (data) {
+                    // BATCH UPDATE: Merge het volledige data object
+                    console.log(`📦 [Athena API] Batch update for ${file}.json`);
+                    Object.assign(targetRow, data);
+                  } else if (key) {
+                    // SINGLE FIELD UPDATE
+                    targetRow[key] = value;
+                  }
+                  
+                  if (isArray) content[index || 0] = targetRow;
+                  else content = targetRow;
+
                   fs.writeFileSync(filePath, JSON.stringify(content, null, 2));
                   
                   // v8: RE-AGGREGATE ALL DATA
-                  console.log(`📦 [Athena API] Re-aggregating all_data.json...`);
                   const allData = {};
                   const dataFiles = fs.readdirSync(dataDir).filter(f => f.endsWith('.json') && f !== 'all_data.json');
                   for (const f of dataFiles) {
@@ -37,7 +50,7 @@ export default defineConfig({
                   }
                   fs.writeFileSync(path.join(dataDir, 'all_data.json'), JSON.stringify(allData, null, 2));
                   
-                  console.log(`✅ [Athena API] Persisted & Aggregated: ${file}.json`);
+                  console.log(`✅ [Athena API] Persisted: ${file}.json`);
                   
                   res.setHeader('Access-Control-Allow-Origin', '*');
                   res.setHeader('Content-Type', 'application/json');

@@ -18,6 +18,10 @@
     "light_bg_color": "#d0d1d2",
     "light_header_color": "#d0d1d2",
     "hero_overlay_opacity": "0",
-    "light_hero_bg_color": "#e7fdfc"
+    "light_hero_bg_color": "#e7fdfc",
+    "header_cta": {
+      "label": "Contact",
+      "url": "#intro"
+    }
   }
 ]
