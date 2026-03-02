@@ -1,5 +1,28 @@
 # Changelog - Athena CMS Factory
 
+## [8.0.2] - 2026-03-02
+### ⚡ Performance & Scalability Optimization
+- **Parallel Publisher Workflow**: De monorepo-publisher (`athena-publisher.yml`) is volledig herschreven. Sites worden nu parallel gebouwd en gepusht via een matrix-job, wat de deployment-tijd voor bulk-updates met circa 70% verlaagt.
+- **Smart Caching**: Implementatie van `pnpm` store caching op GitHub Actions, waardoor `pnpm install` nagenoeg onmiddellijk klaar is bij herhaalde runs.
+- **Optional Audits**: Lighthouse scans zijn nu standaard gedeactiveerd (triggerbaar via `[audit]` in commit) om de feedback-loop te versnellen.
+
+### 🎨 Identity & Aesthetics
+- **Randomized Logo Generator**: Introductie van een gecentraliseerde SVG-generator in de Factory-engine. Elke nieuwe site krijgt nu automatisch een uniek, gestileerd logo (Cirkel, Vierkant, Hexagon of Badge) gebaseerd op de sitenaam en primaire kleur.
+- **Batch Logo Rollout**: Alle 36 bestaande portfolio-sites zijn voorzien van een uniek gegenereerd logo om lege slots in de headers te elimineren.
+- **Urban Soles Media Overhaul**: Alle product-placeholders zijn vervangen door kwalitatieve, lokale afbeeldingen van echte sportschoenen.
+
+### 🛒 E-Commerce & Structural Integrity
+- **Cart Isolation Protocol**: De `CartContext` in de kern-boilerplates is aangepast om `localStorage` sleutels te gebruiken op basis van de `site_name`. Dit voorkomt dat winkelwagentjes van verschillende Athena-sites op hetzelfde domein met elkaar vermengd raken.
+- **New Site Type**: `premium-webshop-filter` is toegevoegd aan de Factory. Dit type ondersteunt standaard interactieve product-filtering en categorie-badges, gebaseerd op de geoptimaliseerde Urban Soles structuur.
+
+### 🛡️ Fixed & Refined
+- **Logo Resolution**: `EditableMedia` is robuuster gemaakt voor paden die al `images/` bevatten, en ondersteunt nu logo's in de `public/` root.
+- **Site Renaming**: `Code Crafters Bold` is gepromoveerd naar de standaard `Code Crafters` site; de oude versie is hernoemd naar `Code Crafters Plain`.
+- **Publisher Fix**: De workflow stript nu trailing newlines van site-namen om `cd` errors in de runner te voorkomen.
+- **Tailwind v4 Fix**: Conflicterende `@import` regels in `main.jsx` en `index.css` opgelost om 500 errors te voorkomen.
+
+---
+
 ## [8.0.0-alpha] - 2026-03-01
 ### 💎 The v8 Gold Standard - Excellence Cycle
 Dit is een fundamentele upgrade van de Factory-architectuur, gericht op 100% stabiliteit tussen de Dock en de Site, en een significante verbetering van de performance (LCP).

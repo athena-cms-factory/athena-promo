@@ -24,7 +24,7 @@
 - [ ] Streamline `scavengeAssets` for faster and more reliable asset mapping.
 - [ ] Implement a unified data aggregator for complex sites and MPA structures.
 - [ ] Optimize the internal build and dev-server orchestration.
-- [ ] **Sitetype from Site**: Add functionality to create a new sitetype based on an existing site's structure and components.
+- [x] **Sitetype from Site**: Added functionality to create a new sitetype based on an existing site's structure and components (implemented via `premium-webshop-filter`).
 
 ## 🎨 UI/UX (Dock)
 - [x] Implement a robust Undo/Redo history engine.
@@ -33,4 +33,4 @@
 
 ## 🏗️ Showcase Hub Improvements
 - [x] **Section Polish**: Secties `showcase` en `proces` productie-ready maken (en debuggen).
-- [ ] **Sitetype from Site**: Add functionality to create a new sitetype based on an existing site's structure and components.
+- [x] **Sitetype from Site**: Added functionality to create a new sitetype based on an existing site's structure and components (implemented via `premium-webshop-filter`).

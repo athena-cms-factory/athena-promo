@@ -17,9 +17,10 @@
     <div id="root"></div>
     <script type="module" src="./src/main.jsx"></script>
     <script>
-      if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed: ', err));
+          const swPath = './sw.js';
+          navigator.serviceWorker.register(swPath).catch(err => console.log('SW registration failed: ', err));
         });
       }
     </script>
