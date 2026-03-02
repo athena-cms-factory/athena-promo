@@ -16,14 +16,17 @@ const Layout = ({ data, children }) => (
 <CartOverlay />
 </div>
 );
-const App = ({ data }) => (
-<CartProvider>
-<Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-<Routes>
-<Route path="/" element={<Layout data={data}><Section data={data} /></Layout>} />
-<Route path="/checkout" element={<Layout data={data}><Checkout /></Layout>} />
-</Routes>
-</Router>
-</CartProvider>
-);
+const App = ({ data }) => {
+  const siteId = data.site_settings?.[0]?.site_name || 'urban-soles';
+  return (
+    <CartProvider siteId={siteId}>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="/" element={<Layout data={data}><Section data={data} /></Layout>} />
+          <Route path="/checkout" element={<Layout data={data}><Checkout /></Layout>} />
+        </Routes>
+      </Router>
+    </CartProvider>
+  );
+};
 export default App;
