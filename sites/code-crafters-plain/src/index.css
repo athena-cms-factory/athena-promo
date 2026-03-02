@@ -5,7 +5,7 @@
    Athena Modern Theme Integration
    Hier importeren we de design tokens en basisstijlen van Tailwind v4
 */
-@import "./css/bold.css";
+@import "./css/modern.css";
 
 /* 
    Project Specifieke Overrides 
