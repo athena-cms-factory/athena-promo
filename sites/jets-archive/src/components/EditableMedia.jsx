@@ -16,9 +16,10 @@ export default function EditableMedia({ src, alt, className, cmsBind, ...props }
 
   let finalPath = src;
   if (src && !src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:')) {
-    const isRootPublic = src.startsWith('./') || (src.includes('.') && !src.includes('/'));
-    const pathPrefix = isRootPublic ? '' : 'images/';
-    finalPath = `${import.meta.env.BASE_URL}${pathPrefix}${src.replace('./', '')}`.replace(/\/+/g, '/');
+    const cleanSrc = src.replace('./', '');
+    const baseUrl = import.meta.env.BASE_URL === './' ? '' : import.meta.env.BASE_URL;
+    // Always use images/ prefix for local relative paths
+    finalPath = `${baseUrl}images/${cleanSrc}`.replace(/\/+/g, '/');
   }
   const finalSrc = finalPath;
 

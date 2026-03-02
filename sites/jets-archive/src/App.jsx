@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 
 const App = ({ data: initialData }) => {
   const [data, setData] = useState(initialData);
+  const [selectedDecades, setSelectedDecades] = useState([]); // Empty array means 'All'
 
   useEffect(() => {
     // Listen for updates from the Dock
@@ -27,6 +28,25 @@ const App = ({ data: initialData }) => {
 
   const basis = data.basis?.[0] || {};
   const jets = data.jets || [];
+
+  // Filter Logic
+  const allDecades = [...new Set(jets.map(jet => Math.floor(jet.introduction_year / 10) * 10))].sort((a, b) => a - b);
+
+  const toggleDecade = (decade) => {
+    if (decade === 'All') {
+      setSelectedDecades([]);
+    } else {
+      setSelectedDecades(prev => 
+        prev.includes(decade) 
+          ? prev.filter(d => d !== decade) 
+          : [...prev, decade]
+      );
+    }
+  };
+
+  const filteredJets = selectedDecades.length === 0 
+    ? jets 
+    : jets.filter(jet => selectedDecades.includes(Math.floor(jet.introduction_year / 10) * 10));
 
   return (
     <StyleProvider data={data}>
@@ -60,16 +80,50 @@ const App = ({ data: initialData }) => {
               {/* Jets Collection */}
               <section id="collection" data-dock-section="jets" className="py-24 px-6">
                 <div className="max-w-7xl mx-auto">
-                  <div className="flex items-center justify-between mb-12">
+                  <div className="flex items-center justify-between mb-8">
                       <h2 className="text-3xl font-black uppercase tracking-tighter">De Collectie</h2>
                       <div className="h-1 flex-grow mx-8 bg-slate-200 hidden md:block"></div>
-                      <div className="text-slate-400 font-bold">{jets.length} Toestellen</div>
+                      <div className="text-slate-400 font-bold">{filteredJets.length} Toestellen</div>
+                  </div>
+
+                  {/* Filter Bar */}
+                  <div className="mb-12 flex flex-wrap gap-2 justify-center">
+                    <button
+                      onClick={() => toggleDecade('All')}
+                      className={`px-6 py-2 rounded-full font-bold transition-all ${
+                        selectedDecades.length === 0 
+                        ? 'bg-sky-500 text-white shadow-lg scale-105' 
+                        : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      Alle Decennia
+                    </button>
+                    {allDecades.map(decade => (
+                      <button
+                        key={decade}
+                        onClick={() => toggleDecade(decade)}
+                        className={`px-6 py-2 rounded-full font-bold transition-all relative ${
+                          selectedDecades.includes(decade) 
+                          ? 'bg-sky-500 text-white shadow-lg scale-105' 
+                          : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'
+                        }`}
+                      >
+                        {decade}s
+                        {selectedDecades.includes(decade) && (
+                          <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500 border border-white"></span>
+                          </span>
+                        )}
+                      </button>
+                    ))}
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                      {jets.map((jet, index) => (
-                        <JetCard key={jet.id || index} jet={jet} index={index} />
-                      ))}
+                      {filteredJets.map((jet, index) => {
+                        const originalIndex = jets.findIndex(j => j.id === jet.id);
+                        return <JetCard key={jet.id || index} jet={jet} index={originalIndex !== -1 ? originalIndex : index} />;
+                      })}
                   </div>
                 </div>
               </section>
