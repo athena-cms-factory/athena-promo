@@ -74,8 +74,10 @@ export default function EditableImage({ src, alt, className, cmsBind, ...props }
     }
   };
 
-  const finalSrc = (src && !src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:'))
-    ? `${import.meta.env.BASE_URL}${src.startsWith('images/') ? '' : 'images/'}${src}`.replace(/\/+/g, '/')
+  const isRootPublic = typeof src === 'string' && src && (src.endsWith('.svg') || src.endsWith('.ico') || src === 'site-logo.svg' || src === 'athena-icon.svg');
+  const pathPrefix = isRootPublic ? '' : 'images/';
+  const finalSrc = (typeof src === 'string' && src && !src.startsWith('http') && !src.startsWith('/') && !src.startsWith('data:'))
+    ? `${import.meta.env.BASE_URL}${pathPrefix}${src}`.replace(/\/+/g, '/')
     : src;
 
   if (!isDev) {

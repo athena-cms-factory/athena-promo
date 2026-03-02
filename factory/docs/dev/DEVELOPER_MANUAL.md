@@ -67,17 +67,18 @@ The Athena Dock features a robust Undo/Redo system (`Ctrl+Z` / `Ctrl+Y`) to quic
 
 ---
 
-## 🖱️ Dock Interaction Modes
-The Athena Dock uses a dual-interaction model to balance visual editing with functional testing.
+## 🖱️ Dock Interaction Modes (v8.1 Standard)
+The Athena Dock uses a dual-interaction model to balance visual editing with functional testing. Since v8.1, the logic has been swapped to prioritize site usability.
 
-### 1. Edit Mode (Standard Click)
-By default, clicking any element in the site-preview (iframe) will:
-- Open the relevant editor modal in the Dock (Text, Media, or Link editor).
-- Highlight the element with a visual binding ring.
+### 1. Action Mode (Standard Click)
+By default, a normal click on any element in the site-preview (iframe) will:
+- Execute the element's native behavior (follow links, trigger buttons, etc.).
+- This ensures live sites remain fully navigable while being previewed in the Dock.
 
-### 2. Action Mode (Shift + Click)
-To test the actual functionality of the site (links, buttons, scrolling) without leaving the editor:
-- **Hold `Shift` while clicking**: This bypasses the editor and executes the element's native behavior.
+### 2. Edit Mode (Shift + Click)
+To select an element for editing:
+- **Hold `Shift` while clicking**: This opens the relevant editor modal in the Dock (Text, Media, or Link editor) and highlights the element with a visual binding ring.
+- **Visual Feedback**: All `Editable` components show a tooltip on hover explaining the "Shift+Click to edit" instruction.
 
 ---
 

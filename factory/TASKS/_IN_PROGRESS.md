@@ -19,8 +19,9 @@
   - [ ] Integrate Antigravity Browser for E2E site auditing.
 
 ## Finalization & Documentation
-- [ ] **Track: Documentation Sync & Jules Integration**
+- [x] **Track: Documentation Sync & Jules Integration**
   - [x] Audit and update all files in `factory/docs/` for terminology consistency (Data Source vs Project).
-  - [x] Update "User Manual" and "CLI Guide" for the new v8.0 features.
+  - [x] Update "User Manual" and "CLI Guide" for the new v8.0/v8.1 features.
+  - [x] Document the v8.1 Shift+Click interaction standard in `DEVELOPER_MANUAL.md`.
   - [ ] Perform a final deep audit using Jules for any remaining architectural inconsistencies.
 

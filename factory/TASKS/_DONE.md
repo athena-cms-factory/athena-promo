@@ -1,5 +1,19 @@
 # ✅ DONE - Athena CMS
 
+## Asset Reliability & Stability Standard v8.2 - 2026-03-02
+- [x] **Safe Path Resolution**
+    - Geïmplementeerd van crash-proof `typeof src === 'string'` checks in alle `Editable` media componenten.
+    - Slimme detectie van root-assets (zoals `.svg` logos) die buiten de `images/` map leven.
+- [x] **Dock Stability Fix**
+    - Hersteld van een kritieke "white screen" crash in de Dock `VisualEditor`.
+    - Toegevoegd van de ontbrekende `getPreviewUrl` functie en robuuste upload-afhandeling.
+- [x] **EditableImage Upgrade**
+    - Geüpgrade van de `EditableImage` component naar de nieuwe v8.1 interactie-standaard (Shift+Klik om te bewerken).
+- [x] **Global Ecosystem Recovery**
+    - Volledige hersteloperatie uitgevoerd op 9 sites (o.a. `athena-hub`, `code-crafters`) om corrupte paden en caches te elimineren.
+- [x] **Tailwind v4 Build Fix**
+    - Gecorrigeerd van nesting-fouten in glassmorphism CSS bestanden om succesvolle productie-builds te garanderen.
+
 ## Interaction & UX Standard v8.1 - 2026-03-02
 - [x] **Swapped Dock Interaction Logic**
     - Fundamentele UX verbetering: Normale klik = Normale werking; Shift+Klik = Editor (Dock) werking.

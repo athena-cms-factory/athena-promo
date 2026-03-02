@@ -1,5 +1,15 @@
 # Changelog - Athena CMS Factory
 
+## [8.0.4] - 2026-03-02
+### 🛡️ Asset Reliability & Stability Standard (v8.2)
+- **Safe Path Resolution**: Introductie van een robuust pad-resolutie protocol in `EditableMedia` en `EditableImage`. 
+    - **Crash-proof**: Toegevoegd `typeof src === 'string'` checks om te voorkomen dat de applicatie crasht op `endsWith()` wanneer er per ongeluk objecten of null-waarden in afbeeldingsvelden staan.
+    - **Smart Root Access**: Het systeem herkent nu automatisch root-assets (`.svg`, `.ico`, `.png` in de `public/` root) en omzeilt daarvoor de `/images/` submap.
+- **Dock Stability Fix**: Hersteld van een kritieke "white screen" crash in de Athena Dock `VisualEditor` bij het openen van media-items. De ontbrekende `getPreviewUrl` functie is toegevoegd, inclusief een live preview en upload-interface.
+- **EditableImage Upgrade**: De `EditableImage` component (gebruikt voor o.a. logo's en hero's) is gepromoveerd naar de v8.1 interactie-standaard. Het reageert nu correct op **Shift+Klik** voor bewerking in de Dock.
+- **Tailwind v4 Utility Fix**: Opgelost van een build-fout in glassmorphism-thema's waarbij `@utility` directives genest waren binnen `@layer`, wat niet toegestaan is in de nieuwe v4 engine.
+- **Ecosystem Recovery**: Volledige hersteloperatie uitgevoerd op `athena-hub` en 8 andere sites. De beruchte `images/images` pad-dubbeling fout is geëlimineerd via een schone rebuild en data-sync.
+
 ## [8.0.3] - 2026-03-02
 ### ⚡ User Experience & Interaction Standard (v8.1)
 - **Swapped Dock Interaction Logic**: De interactie tussen de Dock en de Site is fundamenteel verbeterd. 
