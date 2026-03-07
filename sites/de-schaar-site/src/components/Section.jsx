@@ -10,14 +10,14 @@ const Section = ({ data }) => {
   const layouts = Array.isArray(data.layout_settings) ? (data.layout_settings[0] || {}) : (data.layout_settings || {});
 
   const sectionConfigs = [
-    { table: "basis", title: "basisgegevens", subtitle: "Overzicht van basisgegevens", defaultLayout: "list" },
-    { table: "locaties", title: "locaties", subtitle: "Overzicht van locaties", defaultLayout: "list" },
+    { table: "footer", title: "basisgegevens", subtitle: "Overzicht van basisgegevens", defaultLayout: "list" },
+    { table: "locatie", title: "locaties", subtitle: "Overzicht van locaties", defaultLayout: "list" },
     { table: "stylist_gradatie", title: "stylist gradatie", subtitle: "Overzicht van stylist gradatie", defaultLayout: "grid" },
-    { table: "teamleden", title: "teamleden", subtitle: "Overzicht van teamleden", defaultLayout: "list" },
+    { table: "team", title: "team", subtitle: "Overzicht van het team", defaultLayout: "list" },
     { table: "diensten_hoofdgroepen", title: "diensten hoofdgroepen", subtitle: "Overzicht van diensten hoofdgroepen", defaultLayout: "grid" },
-    { table: "diensten_tarieven", title: "diensten tarieven", subtitle: "Overzicht van diensten tarieven", defaultLayout: "list" },
+    { table: "tarieven", title: "tarieven", subtitle: "Overzicht van tarieven", defaultLayout: "list" },
     { table: "testimonials", title: "testimonials", subtitle: "Overzicht van testimonials", defaultLayout: "list" },
-    { table: "aveda_informatie", title: "aveda informatie", subtitle: "Overzicht van aveda informatie", defaultLayout: "grid" },
+    { table: "aveda", title: "aveda", subtitle: "Overzicht van aveda informatie", defaultLayout: "grid" },
     { table: "social_media", title: "social media", subtitle: "Overzicht van social media", defaultLayout: "grid" },
     { table: "paginastructuur", title: "paginastructuur", subtitle: "Overzicht van paginastructuur", defaultLayout: "grid" }
   ];
@@ -101,7 +101,7 @@ const Section = ({ data }) => {
         const isVisible = sectionMeta.visible !== false;
 
         // Skip technical sections by default
-        if (config.table === 'paginastructuur' || config.table === 'basis' || config.table === 'social_media' || config.table.includes('hoofdgroepen')) return null;
+        if (config.table === 'paginastructuur' || config.table === 'footer' || config.table === 'social_media' || config.table.includes('hoofdgroepen')) return null;
         
         // Skip based on visibility setting (except in Dev mode where we show them dimmed)
         if (!isVisible && !isDev) return null;
@@ -139,7 +139,7 @@ const Section = ({ data }) => {
         const paddingVal = sectionMeta.padding !== undefined ? sectionMeta.padding : 32;
 
         // SPECIAL CASE: DIENSTEN TARIEVEN (Gegroepeerd)
-        if (config.table === 'diensten_tarieven') {
+        if (config.table === 'tarieven') {
           const hoofdgroepen = data.diensten_hoofdgroepen || [];
           const grouped = hoofdgroepen
             .map((groep, originalIndex) => ({
@@ -207,7 +207,7 @@ const Section = ({ data }) => {
                                   tagName="span"
                                   value={item.dienst_naam}
                                   className="text-lg font-medium text-text group-hover/item:text-accent transition-colors duration-300"
-                                  cmsBind={{ file: 'diensten_tarieven', index: item.absoluteIndex ?? iIdx, key: 'dienst_naam' }}
+                                  cmsBind={{ file: 'tarieven', index: item.absoluteIndex ?? iIdx, key: 'dienst_naam' }}
                                 />
                                 <div className="flex-1 border-b border-dotted border-slate-300 dark:border-white/10 mx-2 relative top-[-4px] opacity-40"></div>
                                 <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ const Section = ({ data }) => {
                                     tagName="span"
                                     value={item.basis_prijs}
                                     className="font-serif font-bold text-xl text-text"
-                                    cmsBind={{ file: 'diensten_tarieven', index: item.absoluteIndex ?? iIdx, key: 'basis_prijs' }}
+                                    cmsBind={{ file: 'tarieven', index: item.absoluteIndex ?? iIdx, key: 'basis_prijs' }}
                                     renderValue={(val) => `€${getText(val)}`}
                                   />
                                 </div>

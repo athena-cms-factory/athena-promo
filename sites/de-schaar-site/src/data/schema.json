@@ -3,7 +3,7 @@
   "track": "docked",
   "data_structure": [
     {
-      "table_name": "basis",
+      "table_name": "footer",
       "columns": [
         {
           "name": "bedrijfsnaam",
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "table_name": "locaties",
+      "table_name": "locatie",
       "columns": [
         {
           "name": "locatie_id",
@@ -94,7 +94,7 @@
       ]
     },
     {
-      "table_name": "teamleden",
+      "table_name": "team",
       "columns": [
         {
           "name": "teamlid_id",
@@ -140,7 +140,7 @@
       ]
     },
     {
-      "table_name": "diensten_tarieven",
+      "table_name": "tarieven",
       "columns": [
         {
           "name": "tarief_id",
@@ -202,7 +202,7 @@
       ]
     },
     {
-      "table_name": "aveda_informatie",
+      "table_name": "aveda",
       "columns": [
         {
           "name": "info_id",
@@ -269,6 +269,15 @@
       ]
     }
   ],
+  "mapping": {
+    "header": {
+      "logo": "site_logo_image",
+      "titel": "title",
+      "tagline": "tagline",
+      "knop-tekst": "header_button_text",
+      "knop-url": "header_button_url"
+    }
+  },
   "design_system": {
     "colors": {
       "primary": "#3C5A4D",

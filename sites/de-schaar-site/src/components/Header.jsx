@@ -68,7 +68,7 @@ function Header({ primaryTable, tableName, hero = {}, headerSettings = {}, navDa
             value={rawTitle}
             className="font-serif font-bold text-xl tracking-tighter uppercase"
             style={{ display: settings.header_show_title === false ? 'none' : 'inline' }}
-            table="basis"
+            table="footer"
             id={0}
             field={fallbackTitleKey}
           />

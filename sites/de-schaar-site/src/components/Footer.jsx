@@ -45,7 +45,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
               <EditableText
                 tagName="span"
                 value={rawNaam}
-                table="basis"
+                table="footer"
                 id={0}
                 field={naamKey}
               />
@@ -57,7 +57,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
                   tagName="p"
                   className="text-lg leading-relaxed max-w-sm"
                   value={adres}
-                  table="basis"
+                  table="footer"
                   id={0}
                   field={adresKey}
                 />
@@ -87,7 +87,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
               <EditableText
                 tagName="span"
                 value={info.footer_contact_title || 'Contact'}
-                table="basis"
+                table="footer"
                 id={0}
                 field="footer_contact_title"
               />
@@ -102,7 +102,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
                     tagName="span"
                     className="text-sm font-bold group-hover:text-white transition-colors"
                     value={telefoon}
-                    table="basis"
+                    table="footer"
                     id={0}
                     field={telKey}
                   />
@@ -117,7 +117,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
                     tagName="span"
                     className="text-sm font-bold group-hover:text-white transition-colors"
                     value={email}
-                    table="basis"
+                    table="footer"
                     id={0}
                     field={emailKey}
                   />
@@ -132,7 +132,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
               <EditableText
                 tagName="span"
                 value={info.footer_admin_title || 'Administratie'}
-                table="basis"
+                table="footer"
                 id={0}
                 field="footer_admin_title"
               />
@@ -143,7 +143,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
                   <EditableText
                     tagName="span"
                     value={info.kvk_label || 'KVK Nummer'}
-                    table="basis"
+                    table="footer"
                     id={0}
                     field="kvk_label"
                   />
@@ -152,7 +152,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
                   tagName="span"
                   className="text-white font-bold"
                   value={kvk}
-                  table="basis"
+                  table="footer"
                   id={0}
                   field={kvkKey}
                 />
@@ -163,7 +163,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
               <EditableText
                 tagName="span"
                 value={info.footer_rights_text || 'Alle rechten voorbehouden.'}
-                table="basis"
+                table="footer"
                 id={0}
                 field="footer_rights_text"
               />
@@ -177,7 +177,7 @@ export default function Footer({ primaryTable, socialData = [] }) {
             <EditableText
               tagName="span"
               value={info.footer_credit_text || 'Design by Athena CMS Factory'}
-              table="basis"
+              table="footer"
               id={0}
               field="footer_credit_text"
             />

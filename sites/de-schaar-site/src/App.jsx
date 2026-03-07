@@ -91,7 +91,7 @@ const App = ({ data: initialData }) => {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  const primaryTable = data['basis'] || [];
+  const primaryTable = data['footer'] || [];
   
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500">
@@ -99,7 +99,7 @@ const App = ({ data: initialData }) => {
       
       <Header 
         primaryTable={primaryTable} 
-        tableName="basis" 
+        tableName="footer" 
         hero={data['hero']} 
         headerSettings={data['header_settings']}
         navData={data['paginastructuur']}
@@ -110,7 +110,7 @@ const App = ({ data: initialData }) => {
       </main>
 
       <Footer 
-        primaryTable={data['basis']} 
+        primaryTable={data['footer']} 
         socialData={data['social_media']}
       />
     </div>
