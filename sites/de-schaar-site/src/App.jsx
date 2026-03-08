@@ -28,12 +28,13 @@ const App = ({ data: initialData }) => {
       if (type === 'DOCK_UPDATE_TEXT' || type === 'DOCK_UPDATE_COLOR') {
         setData(prev => {
           const newData = { ...prev };
-          if (Array.isArray(newData[file])) {
-            const newArray = [...newData[file]];
-            newArray[index] = { ...newArray[index], [key]: value };
-            newData[file] = newArray;
-          } else if (newData[file]) {
-            newData[file] = { ...newData[file], [key]: value };
+          const targetFile = file || (key.startsWith('header_') ? 'header_settings' : 'site_settings');
+          
+          if (Array.isArray(newData[targetFile])) {
+            newData[targetFile] = [...newData[targetFile]];
+            newData[targetFile][index || 0] = { ...newData[targetFile][index || 0], [key]: value };
+          } else if (newData[targetFile]) {
+            newData[targetFile] = { ...newData[targetFile], [key]: value };
           }
           return newData;
         });

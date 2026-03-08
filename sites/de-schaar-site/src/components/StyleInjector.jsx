@@ -78,7 +78,7 @@ const StyleInjector = ({ hero = {}, headerSettings = {} }) => {
       root.style.removeProperty('--header-border');
     }
 
-  }, [settings]);
+  }, [JSON.stringify(settings)]);
 
   return null; // This component doesn't render anything
 };

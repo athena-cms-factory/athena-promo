@@ -3,13 +3,13 @@
     "toon_logo": false,
     "toon_titel": true,
     "header_zichtbaar": true,
-    "header_transparantie": "0.61",
-    "header_hoogte": "115",
+    "header_transparantie": "0.33",
+    "header_hoogte": "60",
     "content_top_offset": "0",
     "toon_ondertitel": false,
     "toon_cta_knop": true,
     "toon_navigatie": true,
-    "header_height": "40",
+    "header_height": "123",
     "header_transparent": "0",
     "header_visible": true
   }

@@ -245,30 +245,36 @@ const DockFrame = () => {
   // Send color update to site
   const updateColor = (key, value, shouldSave = true) => {
     if (iframeRef.current) {
+      // 1. Determine which file this property belongs to
+      let file = 'site_settings';
+      if (key.startsWith('header_') || key === 'content_top_offset' || key.startsWith('toon_') || key === 'header_hoogte' || key === 'header_transparantie') {
+        file = 'header_settings';
+      } else if (key.startsWith('hero_') || key === 'title' || key === 'titel') {
+        file = 'hero';
+      } else if (key.includes('global_')) {
+        file = 'style_config';
+      }
+
+      // 2. Live preview via postMessage (Crucial: send 'file' so App.jsx knows where to update)
       iframeRef.current.contentWindow.postMessage({
         type: 'DOCK_UPDATE_COLOR',
+        file,
+        index: 0,
         key,
         value
       }, '*');
 
       if (shouldSave) {
-        let file = 'site_settings';
-        if (key.startsWith('header_') || key === 'content_top_offset') file = 'header_settings';
-        else if (key.startsWith('hero_') || key === 'title' || key === 'titel') file = 'hero';
+        // Speciale check voor objecten (zoals de titel)
+        const currentData = siteStructure?.data?.[file];
+        const row = Array.isArray(currentData) ? currentData[0] : currentData;
+        const existingValue = row ? row[key] : null;
 
-        // Get actual current value to check if it's an object
-        const currentTable = siteStructure?.data?.[file];
-        const row = Array.isArray(currentTable) ? currentTable[0] : currentTable;
-        const oldValue = row ? row[key] : null;
-
-        if (typeof oldValue === 'object' && oldValue !== null) {
-          // Preserve existing object properties (shadow, font) and only update color
-          const newValue = { ...oldValue, color: value };
-          pushToHistory(file, 0, key, oldValue, newValue);
-          saveData(file, 0, key, newValue);
+        if (typeof existingValue === 'object' && existingValue !== null) {
+          const newValue = { ...existingValue, color: value };
+          saveData(file, 0, key, newValue, null, true);
         } else {
-          pushToHistory(file, 0, key, oldValue, value);
-          saveData(file, 0, key, value);
+          saveData(file, 0, key, value, null, true);
         }
       }
     }

@@ -8,13 +8,9 @@ export default function DesignControls({ onColorChange, siteStructure }) {
   // Lock mechanism to prevent slider jump-back
   const lastInteractionTime = useRef(0);
 
-  const [localColors, setLocalColors] = useState({
-    // ... rest of state
-    content_top_offset: 0,
-    // ...
-  });
+  const [localColors, setLocalColors] = useState({});
 
-  // NEW: Dedicated local state for high-frequency sliders to prevent jump-back
+  // Dedicated local state for high-frequency sliders to prevent jump-back
   const [sliderValues, setSliderValues] = useState({
     content_top_offset: 0,
     header_height: 80
@@ -23,16 +19,19 @@ export default function DesignControls({ onColorChange, siteStructure }) {
   // Sync met de werkelijke data van de site bij het laden of switchen
   useEffect(() => {
     // LOCK: Als we net handmatig iets hebben aangepast, negeren we de inkomende sync even
-    // Dit voorkomt het "terugspringen" van sliders
-    if (Date.now() - lastInteractionTime.current < 2000) {
-      return;
-    }
+    if (Date.now() - lastInteractionTime.current < 2000) return;
 
-    if (siteStructure?.data?.site_settings) {
-      const settings = Array.isArray(siteStructure.data.site_settings)
-        ? (siteStructure.data.site_settings[0] || {})
-        : siteStructure.data.site_settings;
+    const headerSettings = Array.isArray(siteStructure?.data?.header_settings) 
+      ? siteStructure.data.header_settings[0] 
+      : (siteStructure?.data?.header_settings || {});
+      
+    const siteSettings = Array.isArray(siteStructure?.data?.site_settings) 
+      ? siteStructure.data.site_settings[0] 
+      : (siteStructure?.data?.site_settings || {});
 
+    const settings = { ...siteSettings, ...headerSettings };
+
+    if (Object.keys(settings).length > 0) {
       console.log("🎨 Loading site settings into Design Editor:", settings);
 
       setLocalColors(prev => ({
@@ -40,82 +39,48 @@ export default function DesignControls({ onColorChange, siteStructure }) {
         ...settings
       }));
 
-      // Also sync our decoupled slider values if not currently dragging
-      setSliderValues(prev => ({
-        ...prev,
+      // Sync decoupled slider values
+      setSliderValues({
         content_top_offset: settings.content_top_offset || 0,
-        header_height: settings.header_height || 80
-      }));
+        header_height: settings.header_hoogte || settings.header_height || 80
+      });
     }
   }, [siteStructure]);
 
   // Preview mode (live in iframe)
-  const handlePreview = (key, value, forceSync = false) => {
+  const handlePreview = (key, value) => {
     lastInteractionTime.current = Date.now(); // LOCK ACTIVEREN
 
     // Update decoupled state immediately for smoothness
-    if (key === 'content_top_offset' || key === 'header_height') {
-      setSliderValues(prev => ({ ...prev, [key]: value }));
+    if (key === 'content_top_offset' || key === 'header_hoogte') {
+      const sliderKey = key === 'header_hoogte' ? 'header_height' : key;
+      setSliderValues(prev => ({ ...prev, [sliderKey]: value }));
     }
 
-    setLocalColors(prev => {
-      const newState = { ...prev, [key]: value };
-      // ... rest of existing logic
+    // Update local colors for the pickers
+    setLocalColors(prev => ({ ...prev, [key]: value }));
 
-      if (key === 'theme' || forceSync) {
-        const modePrefix = newState.theme === 'dark' ? 'dark_' : 'light_';
-        onColorChange('theme', newState.theme, false);
-        Object.keys(newState).forEach(k => {
-          if (k.startsWith(modePrefix) || k.startsWith('global_') || k.startsWith('header_') || k === 'content_top_offset' || k === 'hero_overlay_opacity') {
-            // NEW: If it's a color, also generate and send the RGB variant
-            if (newState[k] && typeof newState[k] === 'string' && newState[k].startsWith('#')) {
-              const rgb = hexToRgb(newState[k]);
-              // Map local key to the actual CSS variable name
-              const cssVar = k.replace('light_', '--color-').replace('dark_', '--color-').replace('_color', '');
-              onColorChange(`${cssVar}-rgb`, rgb, false);
-            }
-            onColorChange(k, newState[k], false);
-          }
-        });
-      } else {
-        // Handle single color change
-        if (value && typeof value === 'string' && value.startsWith('#')) {
-          const rgb = hexToRgb(value);
-          const cssVar = key.replace('light_', '--color-').replace('dark_', '--color-').replace('_color', '');
-          onColorChange(`${cssVar}-rgb`, rgb, false);
-        }
-        onColorChange(key, value, false);
-      }
+    // Send to iframe
+    onColorChange(key, value, false);
 
-      return newState;
-    });
+    // If it's a color, also generate and send the RGB variant for live preview
+    if (value && typeof value === 'string' && value.startsWith('#')) {
+      const rgb = hexToRgb(value);
+      const cssVar = key.replace('light_', '--color-').replace('dark_', '--color-').replace('_color', '');
+      onColorChange(`${cssVar}-rgb`, rgb, false);
+    }
   };
-
-  const hexToRgb = (hex) => {
-    const cleanHex = hex.replace('#', '');
-    const r = parseInt(cleanHex.substring(0, 2), 16);
-    const g = parseInt(cleanHex.substring(2, 4), 16);
-    const b = parseInt(cleanHex.substring(4, 6), 16);
-    return isNaN(r) ? "0 0 0" : `${r} ${g} ${b}`;
-  };
-
-  // Re-sync listener
-  useEffect(() => {
-    const handleResync = () => {
-      handlePreview('theme', localColors.theme, true);
-    };
-    window.addEventListener('athena-resync-colors', handleResync);
-    return () => window.removeEventListener('athena-resync-colors', handleResync);
-  }, [localColors.theme]);
 
   // Save mode (persistent)
   const handleSave = (key, value) => {
     lastInteractionTime.current = Date.now(); // LOCK ACTIVEREN
-
-    // Update local state immediately to keep UI in sync
+    
+    // Update local state
     setLocalColors(prev => ({ ...prev, [key]: value }));
-
+    
+    // Trigger persistent save in DockFrame
     onColorChange(key, value, true);
+    
     // Also save RGB variant if color
     if (value && typeof value === 'string' && value.startsWith('#')) {
       const rgb = hexToRgb(value);
@@ -126,18 +91,9 @@ export default function DesignControls({ onColorChange, siteStructure }) {
 
   const handleStyleChange = async (styleName) => {
     if (!window.confirm(`Weet je zeker dat je wilt wisselen naar ${styleName}? Dit herlaadt de site.`)) return;
-    // FIX: Dynamically derive port/origin from the connected site's URL
-    let baseUrl = 'http://localhost:5000';
-    if (siteStructure?.url) {
-      try {
-        const u = new URL(siteStructure.url);
-        baseUrl = u.origin;
-      } catch (e) {
-        console.error("Invalid site URL", siteStructure.url);
-      }
-    }
-
-    const siteName = siteStructure?.url?.split('/')[3] || 'dock-test-site';
+    const rawUrl = siteStructure?.url || window.location.origin;
+    const siteName = rawUrl.split('/')[3] || 'dock-test-site';
+    const baseUrl = rawUrl.split('/' + siteName)[0];
     const url = `${baseUrl}/${siteName}/__athena/update-json`;
     try {
       await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'swap-style', value: styleName }) });
@@ -146,84 +102,11 @@ export default function DesignControls({ onColorChange, siteStructure }) {
     } catch (err) { console.error(err); }
   };
 
-  const handleSaveToDisk = async () => {
-    const btn = document.getElementById('save-to-disk-btn');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SAVING...';
-
-    try {
-      const rawUrl = siteStructure?.url || window.location.origin;
-      const cleanBase = rawUrl.split('?')[0].replace(/\/$/, '');
-      const apiUrl = `${cleanBase}/__athena/update-json`;
-
-      console.log("🚀 Initializing Layout & Color Save to:", apiUrl);
-
-      // We splitsen de data op naar de relevante bestanden
-      const heroData = {};
-      const headerData = {
-          content_top_offset: sliderValues.content_top_offset,
-          header_height: sliderValues.header_height
-      };
-      const siteData = {};
-
-      Object.keys(localColors).forEach(key => {
-        if (typeof localColors[key] === 'object') return;
-
-        if (key.startsWith('header_') || key === 'content_top_offset' || key === 'header_height') {
-            headerData[key] = localColors[key];
-        } else if (key.startsWith('hero_') || key === 'title') {
-            heroData[key] = localColors[key];
-        } else if (key.includes('color') || key.includes('global_') || key.includes('footer_')) {
-            siteData[key] = localColors[key];
-        }
-      });
-
-      const saveFile = async (fileName, data) => {
-          if (Object.keys(data).length === 0) return true;
-          const res = await fetch(apiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ file: fileName, index: 0, data })
-          });
-          return res.ok;
-      };
-
-      const results = await Promise.all([
-          saveFile('hero', heroData),
-          saveFile('header_settings', headerData),
-          saveFile('site_settings', siteData)
-      ]);
-
-      if (results.every(r => r)) {
-        btn.style.background = 'var(--success, #22c55e)';
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> SAVED TO DISK';
-        setTimeout(() => {
-          btn.disabled = false;
-          btn.style.background = '';
-          btn.innerHTML = originalText;
-        }, 2000);
-      } else {
-        throw new Error("One or more saves failed");
-      }
-    } catch (e) {
-      console.error("Save failed:", e);
-      btn.style.background = 'var(--error, #ef4444)';
-      btn.innerHTML = '<i class="fa-solid fa-xmark"></i> ERROR SAVING';
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.style.background = '';
-        btn.innerHTML = originalText;
-      }, 3000);
-    }
-  };
-
   return (
     <div className="p-6 h-full overflow-y-auto">
       <div className="mb-6">
         <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Design Editor</h3>
         <p className="text-xs text-slate-500 mt-1 mb-4">Live design updates via Dock</p>
-
       </div>
 
       <div className="space-y-8">
@@ -252,65 +135,65 @@ export default function DesignControls({ onColorChange, siteStructure }) {
 
         {/* HEADER CONTROLS */}
         <div>
-          <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-tighter mb-4 border-b border-slate-100 pb-2 flex items-center gap-2">
-            <i className="fa-solid fa-window-maximize text-blue-500"></i> Header Controls
+          <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-tighter mb-4 border-b border-blue-50 pb-2 flex items-center gap-2">
+            <i className="fa-solid fa-window-maximize"></i> Header & Layout
           </h4>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-[9px] font-bold uppercase text-slate-400">Visible</label>
+              <label className="text-[9px] font-bold uppercase text-slate-400">Zichtbaar</label>
               <input
                 type="checkbox"
-                checked={localColors.header_visible !== false}
-                onChange={(e) => { handlePreview('header_visible', e.target.checked); handleSave('header_visible', e.target.checked); }}
+                checked={(localColors.header_zichtbaar !== false && localColors.header_visible !== false)}
+                onChange={(e) => { handlePreview('header_zichtbaar', e.target.checked); handleSave('header_zichtbaar', e.target.checked); }}
                 className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               />
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-[9px] font-bold uppercase text-slate-400 block">Header Transparency</label>
-                <span className="text-[9px] font-bold text-blue-500">{((parseFloat(localColors.header_transparent) || 0) * 100).toFixed(0)}%</span>
+                <label className="text-[9px] font-bold uppercase text-slate-400 block">Header Transparantie</label>
+                <span className="text-[9px] font-bold text-blue-500">{Math.round((parseFloat(localColors.header_transparantie || localColors.header_transparent) || 0) * 100)}%</span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="1"
                 step="0.01"
-                value={localColors.header_transparent || 0}
-                onInput={(e) => handlePreview('header_transparent', e.target.value)}
-                onChange={(e) => handleSave('header_transparent', e.target.value)}
+                value={localColors.header_transparantie || localColors.header_transparent || 0}
+                onInput={(e) => handlePreview('header_transparantie', e.target.value)}
+                onChange={(e) => handleSave('header_transparantie', e.target.value)}
                 className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-[9px] font-bold uppercase text-slate-400 block">Header Height</label>
-                <span className="text-[9px] font-bold text-blue-500">{sliderValues.header_height || 80}px</span>
+                <label className="text-[9px] font-bold uppercase text-slate-400 block">Header Hoogte</label>
+                <span className="text-[9px] font-bold text-blue-500">{sliderValues.header_height}px</span>
               </div>
               <input
                 type="range"
                 min="40"
-                max="150"
+                max="250"
                 step="1"
-                value={sliderValues.header_height || 80}
-                onInput={(e) => handlePreview('header_height', e.target.value)}
-                onChange={(e) => handleSave('header_height', e.target.value)}
+                value={sliderValues.header_height}
+                onInput={(e) => handlePreview('header_hoogte', e.target.value)}
+                onChange={(e) => handleSave('header_hoogte', e.target.value)}
                 className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-[9px] font-bold uppercase text-slate-400 block">Content Top Offset (Overlap Fix)</label>
-                <span className="text-[9px] font-bold text-blue-500">{sliderValues.content_top_offset || 0}px</span>
+                <label className="text-[9px] font-bold uppercase text-slate-400 block">Content Top Offset</label>
+                <span className="text-[9px] font-bold text-blue-500">{sliderValues.content_top_offset}px</span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="200"
                 step="1"
-                value={sliderValues.content_top_offset || 0}
+                value={sliderValues.content_top_offset}
                 onInput={(e) => handlePreview('content_top_offset', e.target.value)}
                 onChange={(e) => handleSave('content_top_offset', e.target.value)}
                 className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
@@ -318,11 +201,11 @@ export default function DesignControls({ onColorChange, siteStructure }) {
             </div>
 
             <div className="grid grid-cols-2 gap-2 pt-2">
-              <Toggle label="Logo" settingsKey="header_show_logo" value={localColors.header_show_logo} onPreview={handlePreview} onSave={handleSave} />
-              <Toggle label="Title" settingsKey="header_show_title" value={localColors.header_show_title} onPreview={handlePreview} onSave={handleSave} />
-              <Toggle label="Tagline" settingsKey="header_show_tagline" value={localColors.header_show_tagline} onPreview={handlePreview} onSave={handleSave} />
-              <Toggle label="Button" settingsKey="header_show_button" value={localColors.header_show_button} onPreview={handlePreview} onSave={handleSave} />
-              <Toggle label="Navbar" settingsKey="header_show_navbar" value={localColors.header_show_navbar} onPreview={handlePreview} onSave={handleSave} />
+              <Toggle label="Logo" settingsKey="toon_logo" value={localColors.toon_logo ?? localColors.header_show_logo} onPreview={handlePreview} onSave={handleSave} />
+              <Toggle label="Titel" settingsKey="toon_titel" value={localColors.toon_titel ?? localColors.header_show_title} onPreview={handlePreview} onSave={handleSave} />
+              <Toggle label="Ondertitel" settingsKey="toon_ondertitel" value={localColors.toon_ondertitel ?? localColors.header_show_tagline} onPreview={handlePreview} onSave={handleSave} />
+              <Toggle label="CTA Knop" settingsKey="toon_cta_knop" value={localColors.toon_cta_knop ?? localColors.header_show_button} onPreview={handlePreview} onSave={handleSave} />
+              <Toggle label="Navigatie" settingsKey="toon_navigatie" value={localColors.toon_navigatie ?? localColors.header_show_navbar} onPreview={handlePreview} onSave={handleSave} />
             </div>
           </div>
         </div>
@@ -335,7 +218,7 @@ export default function DesignControls({ onColorChange, siteStructure }) {
           <div className="space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-[9px] font-bold uppercase text-slate-400 block">Hero Overlay Opacity</label>
+                <label className="text-[9px] font-bold uppercase text-slate-400 block">Hero Overlay Transparantie</label>
                 <span className="text-[9px] font-bold text-blue-500">{((parseFloat(localColors.hero_overlay_transparantie || localColors.hero_overlay_opacity) ?? 0.8) * 100).toFixed(0)}%</span>
               </div>
               <input
@@ -351,7 +234,7 @@ export default function DesignControls({ onColorChange, siteStructure }) {
             </div>
 
             <div>
-              <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Hero Min Hoogte (bv. 85vh)</label>
+              <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1">Hero Min Hoogte</label>
               <input
                 type="text"
                 value={localColors.hero_hoogte || localColors.hero_height || '85vh'}
@@ -367,13 +250,13 @@ export default function DesignControls({ onColorChange, siteStructure }) {
           <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Preview Mode</label>
           <div className="flex bg-slate-100 p-1 rounded-full">
             <button
-              onClick={() => handlePreview('theme', 'light')}
+              onClick={() => { handlePreview('theme', 'light'); handleSave('theme', 'light'); }}
               className={`flex-1 py-1.5 rounded-full text-[10px] font-bold transition-all ${localColors.theme !== 'dark' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}
             >
               Light
             </button>
             <button
-              onClick={() => handlePreview('theme', 'dark')}
+              onClick={() => { handlePreview('theme', 'dark'); handleSave('theme', 'dark'); }}
               className={`flex-1 py-1.5 rounded-full text-[10px] font-bold transition-all ${localColors.theme === 'dark' ? 'bg-slate-800 shadow-sm text-white' : 'text-slate-400'}`}
             >
               Dark
@@ -421,64 +304,7 @@ export default function DesignControls({ onColorChange, siteStructure }) {
           </div>
         </div>
 
-        {/* PER-SECTION BACKGROUNDS */}
-        {siteStructure?.sections && (
-          <div>
-            <h4 className="text-[10px] font-black text-orange-500 uppercase tracking-tighter mb-4 border-b border-orange-50 pb-2 flex items-center gap-2">
-              <i className="fa-solid fa-layer-group"></i> Section Backgrounds
-            </h4>
-            <div className="grid grid-cols-2 gap-4">
-              {siteStructure.sections.filter(s => s !== 'site_settings').map(sectionName => {
-                const sectionSettings = siteStructure.data?.section_settings?.[sectionName] || {};
-                const currentVal = sectionSettings.backgroundColor || '';
-
-                return (
-                  <div key={sectionName} className="flex-1">
-                    <label className="text-[9px] font-bold uppercase text-slate-400 block mb-1 truncate" title={sectionName}>
-                      {sectionName.replace(/_/g, ' ')}
-                    </label>
-                    <input
-                      type="color"
-                      value={currentVal || '#ffffff'}
-                      onInput={(e) => {
-                        const val = e.target.value;
-                        const iframe = document.querySelector('iframe');
-                        if (iframe) {
-                          iframe.contentWindow.postMessage({
-                            type: 'DOCK_UPDATE_SECTION_STYLE',
-                            section: sectionName,
-                            key: 'backgroundColor',
-                            value: val
-                          }, '*');
-                        }
-                      }}
-                      onChange={async (e) => {
-                        const val = e.target.value;
-                        const sitePort = import.meta.env.VITE_SITE_PORT || '3000';
-                        const siteName = siteStructure?.url?.split('/')[3] || 'dock-test-site';
-                        const url = `http://localhost:${sitePort}/${siteName}/__athena/update-json`;
-                        try {
-                          await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              file: 'section_settings',
-                              key: `${sectionName}.backgroundColor`,
-                              value: val
-                            })
-                          });
-                        } catch (err) { console.error(err); }
-                      }}
-                      className="w-full h-8 rounded-lg cursor-pointer border border-slate-200 bg-transparent overflow-hidden"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* GLOBAL THEME SETTINGS (RADIUS/SHADOW) - NOW AT THE BOTTOM */}
+        {/* GLOBAL THEME SETTINGS (RADIUS/SHADOW) */}
         <div>
           <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-tighter mb-4 border-b border-slate-100 pb-2 flex items-center gap-2">
             <i className="fa-solid fa-sliders text-blue-500"></i> Global Theme Settings
@@ -540,7 +366,7 @@ const Toggle = ({ label, settingsKey, value, onPreview, onSave }) => (
       type="checkbox"
       checked={value !== false}
       onChange={(e) => { onPreview(settingsKey, e.target.checked); onSave(settingsKey, e.target.checked); }}
-      className="w-3 h-3 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
     />
   </div>
 );
