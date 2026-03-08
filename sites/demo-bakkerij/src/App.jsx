@@ -1,3 +1,4 @@
+import { DisplayConfigProvider } from './components/DisplayConfigContext';
 import StyleInjector from './components/StyleInjector';
 import React, { useMemo } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
@@ -25,7 +26,8 @@ const App = ({ data }) => {
   /* Old Design Engine Removed */
 
   return (
-    <CartProvider>
+    <DisplayConfigProvider data={data}>
+      <CartProvider>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Layout data={data}><Section data={data} /></Layout>} />
@@ -33,6 +35,7 @@ const App = ({ data }) => {
         </Routes>
       </Router>
     </CartProvider>
+    </DisplayConfigProvider>
   );
 };
 

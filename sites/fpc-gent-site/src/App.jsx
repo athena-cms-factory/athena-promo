@@ -1,3 +1,4 @@
+import { DisplayConfigProvider } from './components/DisplayConfigContext';
 import StyleInjector from './components/StyleInjector';
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
@@ -15,7 +16,8 @@ function App({ data }) {
   };
 
   return (
-    <Router>
+    <DisplayConfigProvider data={data}>
+      <Router>
       <div className="min-h-screen flex flex-col bg-white">
         <StyleInjector siteSettings={data?.site_settings || {}} />
         <Header data={headerData} />
@@ -493,6 +495,7 @@ function App({ data }) {
         <Footer />
       </div>
     </Router>
+    </DisplayConfigProvider>
   );
 }
 

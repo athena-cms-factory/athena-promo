@@ -1,3 +1,4 @@
+import { DisplayConfigProvider } from './components/DisplayConfigContext';
 import React from 'react';
 import './index.css';
 
@@ -90,12 +91,14 @@ function App({ data }) {
   if (!data) return <div>Laden...</div>;
 
   return (
-    <div className="container">
+    <DisplayConfigProvider data={data}>
+      <div className="container">
       <Hero data={data} />
       <Projects data={data} />
       <Phase2 data={data} />
       <Footer />
     </div>
+    </DisplayConfigProvider>
   );
 }
 

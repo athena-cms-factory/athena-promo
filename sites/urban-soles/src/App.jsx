@@ -1,3 +1,4 @@
+import { DisplayConfigProvider } from './components/DisplayConfigContext';
 import StyleInjector from './components/StyleInjector';
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
@@ -19,7 +20,8 @@ const Layout = ({ data, children }) => (
 const App = ({ data }) => {
   const siteId = data.site_settings?.[0]?.site_name || 'urban-soles';
   return (
-    <CartProvider siteId={siteId}>
+    <DisplayConfigProvider data={data}>
+      <CartProvider siteId={siteId}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Layout data={data}><Section data={data} /></Layout>} />
@@ -27,6 +29,7 @@ const App = ({ data }) => {
         </Routes>
       </Router>
     </CartProvider>
+    </DisplayConfigProvider>
   );
 };
 export default App;

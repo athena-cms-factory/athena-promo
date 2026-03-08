@@ -1,5 +1,13 @@
 # Changelog - Athena CMS Factory
 
+## [8.0.7] - 2026-03-08
+### 🎨 Component Excellence & Text Styling v8.4.1
+- **EditableText Upgrade (v8.4.1)**: Uitgebreide styling-mogelijkheden voor de kern `EditableText` component:
+    - **Font Family Selection**: Ondersteuning voor het kiezen van specifieke lettertypen per element.
+    - **Advanced Text Shadows**: Volledige controle over tekstschaduwen, inclusief kleur, X-offset, Y-offset en blur-radius.
+    - **Dynamic Shadow Construction**: De component bouwt nu intelligent de `text-shadow` CSS string op basis van individuele data-velden.
+    - **Batch Rollout**: De upgrade is automatisch uitgerold naar alle 43 actieve componenten in de Factory en sites.
+
 ## [8.0.6] - 2026-03-06
 ### 🎨 Enhanced Design Controls & Text Styling (v8.3)
 - **Header Transparency Slider**: De binaire "Transparent" checkbox in de Dock is vervangen door een traploze **Range Slider (0-100%)**. 

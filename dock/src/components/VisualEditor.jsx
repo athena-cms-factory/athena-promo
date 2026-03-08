@@ -20,7 +20,12 @@ const VisualEditor = ({ item, selectedSite, onSave, onCancel, onUpload }) => {
     fontSize: typeof initialValueData === 'object' ? (initialValueData.fontSize || '') : '',
     fontWeight: typeof initialValueData === 'object' ? (initialValueData.fontWeight || 'normal') : 'normal',
     fontStyle: typeof initialValueData === 'object' ? (initialValueData.fontStyle || 'normal') : 'normal',
-    textAlign: typeof initialValueData === 'object' ? (initialValueData.textAlign || 'left') : 'left'
+    textAlign: typeof initialValueData === 'object' ? (initialValueData.textAlign || 'left') : 'left',
+    fontFamily: typeof initialValueData === 'object' ? (initialValueData.fontFamily || '') : '',
+    shadowX: typeof initialValueData === 'object' ? (initialValueData.shadowX || 0) : 0,
+    shadowY: typeof initialValueData === 'object' ? (initialValueData.shadowY || 0) : 0,
+    shadowBlur: typeof initialValueData === 'object' ? (initialValueData.shadowBlur || 0) : 0,
+    shadowColor: typeof initialValueData === 'object' ? (initialValueData.shadowColor || 'rgba(0,0,0,0.5)') : 'rgba(0,0,0,0.5)'
   });
 
   // [v33 Debug Bridge]: Luister naar antwoorden van de site
@@ -84,7 +89,9 @@ const VisualEditor = ({ item, selectedSite, onSave, onCancel, onUpload }) => {
       finalData = value;
     } else {
       // Check if we have any active styles
-      const hasStyles = textStyles.color || textStyles.fontSize || textStyles.fontWeight !== 'normal' || textStyles.fontStyle !== 'normal' || textStyles.textAlign !== 'left';
+      const hasStyles = textStyles.color || textStyles.fontSize || textStyles.fontWeight !== 'normal' || 
+                        textStyles.fontStyle !== 'normal' || textStyles.textAlign !== 'left' || 
+                        textStyles.fontFamily || textStyles.shadowBlur > 0 || textStyles.shadowX !== 0 || textStyles.shadowY !== 0;
 
       if (hasStyles) {
         finalData = {
@@ -138,15 +145,28 @@ const VisualEditor = ({ item, selectedSite, onSave, onCancel, onUpload }) => {
     }
   };
 
+  const fontOptions = [
+    { label: 'Default', value: '' },
+    { label: 'Sans Serif', value: 'ui-sans-serif, system-ui, sans-serif' },
+    { label: 'Serif', value: 'ui-serif, Georgia, Cambria, serif' },
+    { label: 'Mono', value: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' },
+    { label: 'Inter', value: '"Inter", sans-serif' },
+    { label: 'Poppins', value: '"Poppins", sans-serif' },
+    { label: 'Montserrat', value: '"Montserrat", sans-serif' },
+    { label: 'Playfair', value: '"Playfair Display", serif' }
+  ];
+
+  const shadowString = `${textStyles.shadowX}px ${textStyles.shadowY}px ${textStyles.shadowBlur}px ${textStyles.shadowColor}`;
+
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
-      <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-700 animate-in zoom-in duration-150">
-        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-          <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Editor v33</h3>
+      <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200 dark:border-slate-700 animate-in zoom-in duration-150 max-h-[90vh] flex flex-col">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
+          <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Text Editor v8.4.1</h3>
           <button onClick={onCancel} className="text-slate-400 hover:text-slate-600"><i className="fa-solid fa-xmark"></i></button>
         </div>
 
-        <div className="p-8 space-y-6">
+        <div className="p-8 space-y-6 overflow-y-auto">
           {isLink ? (
             <>
               <div className="space-y-2">
@@ -214,83 +234,132 @@ const VisualEditor = ({ item, selectedSite, onSave, onCancel, onUpload }) => {
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-4 p-4 bg-slate-50 dark:bg-black border border-slate-200 dark:border-slate-800 rounded-2xl">
-                {/* Color */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block">Color</label>
-                  <input
-                    type="color"
-                    value={textStyles.color || '#000000'}
-                    onChange={(e) => setTextStyles(prev => ({ ...prev, color: e.target.value }))}
-                    className="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 bg-transparent"
-                  />
-                </div>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-slate-50 dark:bg-black border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-4">
+                    {/* Color */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block">Color</label>
+                      <input
+                        type="color"
+                        value={textStyles.color || '#000000'}
+                        onChange={(e) => setTextStyles(prev => ({ ...prev, color: e.target.value }))}
+                        className="w-10 h-10 rounded-lg cursor-pointer border border-slate-200 bg-transparent"
+                      />
+                    </div>
 
-                {/* Font Size */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block">Size (px)</label>
-                  <input
-                    type="number"
-                    placeholder="Auto"
-                    value={textStyles.fontSize}
-                    onChange={(e) => setTextStyles(prev => ({ ...prev, fontSize: e.target.value }))}
-                    className="w-20 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs"
-                  />
-                </div>
+                    {/* Font Size */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block">Size (px)</label>
+                      <input
+                        type="number"
+                        placeholder="Auto"
+                        value={textStyles.fontSize}
+                        onChange={(e) => setTextStyles(prev => ({ ...prev, fontSize: e.target.value }))}
+                        className="w-20 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold"
+                      />
+                    </div>
 
-                {/* Font Style / Weight */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block">Style</label>
-                  <div className="flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => setTextStyles(prev => ({ ...prev, fontWeight: prev.fontWeight === 'bold' ? 'normal' : 'bold' }))}
-                      className={`p-2 text-xs w-8 ${textStyles.fontWeight === 'bold' ? 'bg-blue-500 text-white' : 'hover:bg-slate-100'}`}
-                      title="Bold"
-                    >B</button>
-                    <button
-                      onClick={() => setTextStyles(prev => ({ ...prev, fontStyle: prev.fontStyle === 'italic' ? 'normal' : 'italic' }))}
-                      className={`p-2 text-xs w-8 italic ${textStyles.fontStyle === 'italic' ? 'bg-blue-500 text-white' : 'hover:bg-slate-100'}`}
-                      title="Italic"
-                    >I</button>
+                    {/* Font Family */}
+                    <div className="space-y-1 flex-1 min-w-[120px]">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block">Font</label>
+                      <select
+                        value={textStyles.fontFamily}
+                        onChange={(e) => setTextStyles(prev => ({ ...prev, fontFamily: e.target.value }))}
+                        className="w-full p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold outline-none"
+                      >
+                        {fontOptions.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    {/* Font Style / Weight */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block">Style</label>
+                      <div className="flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => setTextStyles(prev => ({ ...prev, fontWeight: prev.fontWeight === 'bold' ? 'normal' : 'bold' }))}
+                          className={`p-2 text-xs w-10 h-10 ${textStyles.fontWeight === 'bold' ? 'bg-blue-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                          title="Bold"
+                        >B</button>
+                        <button
+                          onClick={() => setTextStyles(prev => ({ ...prev, fontStyle: prev.fontStyle === 'italic' ? 'normal' : 'italic' }))}
+                          className={`p-2 text-xs w-10 h-10 italic ${textStyles.fontStyle === 'italic' ? 'bg-blue-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                          title="Italic"
+                        >I</button>
+                      </div>
+                    </div>
+
+                    {/* Alignment */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black uppercase text-slate-400 block">Align</label>
+                      <div className="flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                        {['left', 'center', 'right'].map(align => (
+                          <button
+                            key={align}
+                            onClick={() => setTextStyles(prev => ({ ...prev, textAlign: align }))}
+                            className={`p-2 text-xs w-10 h-10 ${textStyles.textAlign === align ? 'bg-blue-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                            title={align.charAt(0).toUpperCase() + align.slice(1)}
+                          >
+                            <i className={`fa-solid fa-align-${align}`}></i>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Alignment */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block">Align</label>
-                  <div className="flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                    {['left', 'center', 'right'].map(align => (
-                      <button
-                        key={align}
-                        onClick={() => setTextStyles(prev => ({ ...prev, textAlign: align }))}
-                        className={`p-2 text-xs w-8 ${textStyles.textAlign === align ? 'bg-blue-500 text-white' : 'hover:bg-slate-100'}`}
-                        title={align.charAt(0).toUpperCase() + align.slice(1)}
-                      >
-                        <i className={`fa-solid fa-align-${align}`}></i>
-                      </button>
-                    ))}
+                <div className="space-y-4 pt-4 md:pt-0 md:border-l md:border-slate-200 md:dark:border-slate-800 md:pl-6">
+                  <label className="text-[10px] font-black uppercase text-blue-500 block">Text Shadow</label>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[9px] uppercase text-slate-400">X-Offset ({textStyles.shadowX}px)</label>
+                      <input type="range" min="-20" max="20" value={textStyles.shadowX} onChange={(e) => setTextStyles(prev => ({ ...prev, shadowX: parseInt(e.target.value) }))} className="w-full accent-blue-500" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] uppercase text-slate-400">Y-Offset ({textStyles.shadowY}px)</label>
+                      <input type="range" min="-20" max="20" value={textStyles.shadowY} onChange={(e) => setTextStyles(prev => ({ ...prev, shadowY: parseInt(e.target.value) }))} className="w-full accent-blue-500" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] uppercase text-slate-400">Blur ({textStyles.shadowBlur}px)</label>
+                      <input type="range" min="0" max="30" value={textStyles.shadowBlur} onChange={(e) => setTextStyles(prev => ({ ...prev, shadowBlur: parseInt(e.target.value) }))} className="w-full accent-blue-500" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] uppercase text-slate-400">Shadow Color</label>
+                      <div className="flex gap-2">
+                        <input type="color" value={textStyles.shadowColor.startsWith('rgba') ? '#000000' : textStyles.shadowColor} onChange={(e) => setTextStyles(prev => ({ ...prev, shadowColor: e.target.value }))} className="w-8 h-8 rounded cursor-pointer border border-slate-200 bg-transparent" />
+                        <button onClick={() => setTextStyles(prev => ({ ...prev, shadowColor: 'rgba(0,0,0,0.5)' }))} className="text-[8px] font-bold text-slate-400 hover:text-blue-500 underline uppercase">Reset</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <textarea
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className="w-full p-6 bg-slate-50 dark:bg-black border border-slate-200 dark:border-slate-700 rounded-2xl min-h-[200px] text-slate-900 dark:text-white resize-none outline-none focus:ring-2 focus:ring-blue-500"
-                style={{
-                  color: textStyles.color,
-                  fontSize: textStyles.fontSize ? `${textStyles.fontSize}px` : undefined,
-                  fontWeight: textStyles.fontWeight,
-                  fontStyle: textStyles.fontStyle,
-                  textAlign: textStyles.textAlign
-                }}
-              />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-slate-400">Content</label>
+                <textarea
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  className="w-full p-6 bg-slate-50 dark:bg-black border border-slate-200 dark:border-slate-700 rounded-2xl min-h-[150px] text-slate-900 dark:text-white resize-none outline-none focus:ring-2 focus:ring-blue-500"
+                  style={{
+                    color: textStyles.color,
+                    fontSize: textStyles.fontSize ? `${textStyles.fontSize}px` : undefined,
+                    fontWeight: textStyles.fontWeight,
+                    fontStyle: textStyles.fontStyle,
+                    textAlign: textStyles.textAlign,
+                    fontFamily: textStyles.fontFamily,
+                    textShadow: shadowString
+                  }}
+                />
+              </div>
             </div>
           )}
         </div>
 
-        <div className="p-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-4">
+        <div className="p-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-4 shrink-0">
           <button onClick={onCancel} className="px-6 py-3 text-slate-500 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl">Cancel</button>
           <button onClick={handleSave} className="px-10 py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl shadow-xl shadow-blue-500/20 active:scale-95 transition-all">SAVE CHANGES</button>
         </div>

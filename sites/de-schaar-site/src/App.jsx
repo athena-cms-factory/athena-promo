@@ -1,3 +1,4 @@
+import { DisplayConfigProvider } from './components/DisplayConfigContext';
 import React, { useMemo, useState, useEffect } from 'react';
 import Header from './components/Header';
 import Section from './components/Section';
@@ -94,26 +95,28 @@ const App = ({ data: initialData }) => {
   const primaryTable = data['footer'] || [];
   
   return (
-    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500">
-      <StyleInjector hero={data['hero']} headerSettings={data['header_settings']} />
-      
-      <Header 
-        primaryTable={primaryTable} 
-        tableName="footer" 
-        hero={data['hero']} 
-        headerSettings={data['header_settings']}
-        navData={data['navbar']}
-      />
-      
-      <main>
-        <Section data={data} />
-      </main>
+    <DisplayConfigProvider data={data}>
+      <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500">
+        <StyleInjector hero={data['hero']} headerSettings={data['header_settings']} />
+        
+        <Header 
+          primaryTable={primaryTable} 
+          tableName="footer" 
+          hero={data['hero']} 
+          headerSettings={data['header_settings']}
+          navData={data['navbar']}
+        />
+        
+        <main>
+          <Section data={data} />
+        </main>
 
-      <Footer 
-        primaryTable={data['footer']} 
-        socialData={data['social_media']}
-      />
-    </div>
+        <Footer 
+          primaryTable={data['footer']} 
+          socialData={data['social_media']}
+        />
+      </div>
+    </DisplayConfigProvider>
   );
 };
 

@@ -1,3 +1,4 @@
+import { DisplayConfigProvider } from './components/DisplayConfigContext';
 import StyleInjector from './components/StyleInjector';
 import React from 'react';
 import { HashRouter as Router } from 'react-router-dom';
@@ -38,7 +39,8 @@ const App = ({ data }) => {
   }, [data.site_settings]);
 
   return (
-    <CartProvider>
+    <DisplayConfigProvider data={data}>
+      <CartProvider>
       <Router>
         <div className="min-h-screen bg-[var(--color-background,white)] text-[var(--color-text,slate-900)]">
       <StyleInjector siteSettings={data['site_settings']} />
@@ -55,6 +57,7 @@ const App = ({ data }) => {
         </div>
       </Router>
     </CartProvider>
+    </DisplayConfigProvider>
   );
 };
 

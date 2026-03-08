@@ -1,85 +1,121 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
+import { useDisplayConfig } from './DisplayConfigContext';
 
 /**
- * EditableText
- * Maakt tekst direct bewerkbaar in de browser tijdens development.
- * Slaat wijzigingen op in de JSON via de Athena API en communiceert met de Dock.
+ * EditableText (Docked Track v8.4)
+ * Passive wrapper that binds to the Athena Dock with individual styling.
  */
-export default function EditableText({ tagName: Tag = 'span', value, cmsBind, className = "", style = {}, ...props }) {
+export default function EditableText({ 
+  tagName: Tag = 'span', 
+  value, 
+  children, 
+  cmsBind, 
+  table, 
+  field, 
+  id, 
+  className = "", 
+  style = {}, 
+  renderValue, 
+  ...props 
+}) {
+  const { isFieldVisible } = useDisplayConfig() || {};
   const isDev = import.meta.env.DEV;
-  const [currentValue, setCurrentValue] = useState(value);
-  const elementRef = useRef(null);
 
-  // Update lokale staat als de prop verandert
-  useEffect(() => {
-    setCurrentValue(value);
-  }, [value]);
+  const binding = useMemo(() => cmsBind || { 
+    file: table, 
+    index: id !== undefined ? id : 0, 
+    key: field 
+  }, [cmsBind, table, id, field]);
 
-  // Bepaal de dock-bind string voor communicatie met de iframe parent
-  const dockBind = cmsBind ? JSON.stringify({ 
-    file: cmsBind.file, 
-    index: cmsBind.index || 0, 
-    key: cmsBind.key 
-  }) : null;
-
-  if (!isDev) {
-    return <Tag className={className} style={style}>{value}</Tag>;
+  // 1. Visibility Check
+  if (isFieldVisible && !isFieldVisible(binding.file, binding.key)) {
+    return null;
   }
 
-  const handleSave = async () => {
-    const newValue = elementRef.current.innerText.trim();
+  const actualValue = value !== undefined ? value : children;
+  const isObject = typeof actualValue === 'object' && actualValue !== null && !React.isValidElement(actualValue);
+
+  // 2. Advanced Content Extraction
+  const content = useMemo(() => {
+    if (renderValue) return renderValue(actualValue);
+    if (!isObject) return actualValue ?? "";
     
-    // Alleen opslaan als er echt iets veranderd is
-    if (newValue === value) return;
+    return actualValue.text || 
+           actualValue.title || 
+           actualValue.label || 
+           actualValue.name || 
+           actualValue.value || 
+           actualValue.content || 
+           (typeof actualValue === 'object' ? JSON.stringify(actualValue) : actualValue);
+  }, [actualValue, isObject, renderValue]);
 
-    try {
-      const res = await fetch((import.meta.env.BASE_URL + '__athena/update-json').replace(/([^:]\/)\/+/g, "$1"), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          file: cmsBind.file,
-          index: cmsBind.index || 0,
-          key: cmsBind.key,
-          value: newValue
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        console.log(`✅ Opgeslagen: "${newValue}"`);
-        // Forceer een reload om alles in sync te houden
-        window.location.reload();
-      }
-    } catch (err) {
-      console.error("❌ Fout bij opslaan tekst:", err);
-    }
-  };
+  // 3. Robust Individual Styles (v8.4 Standard)
+  const individualStyle = useMemo(() => {
+    if (!isObject) return style;
 
-  const onKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      elementRef.current.blur();
-    }
-    if (e.key === 'Escape') {
-      elementRef.current.innerText = value;
-      elementRef.current.blur();
-    }
-  };
+    // Construct Text Shadow string
+    const shadowX = actualValue.shadowX !== undefined ? `${actualValue.shadowX}px` : '0px';
+    const shadowY = actualValue.shadowY !== undefined ? `${actualValue.shadowY}px` : '0px';
+    const shadowBlur = actualValue.shadowBlur !== undefined ? `${actualValue.shadowBlur}px` : '0px';
+    const shadowColor = actualValue.shadowColor || 'rgba(0,0,0,0.5)';
+    
+    const hasShadow = actualValue.shadowX !== undefined || actualValue.shadowY !== undefined || actualValue.shadowBlur !== undefined;
+    const textShadow = hasShadow ? `${shadowX} ${shadowY} ${shadowBlur} ${shadowColor}` : undefined;
+
+    const styles = {
+      color: actualValue.color,
+      fontSize: actualValue.fontSize ? (typeof actualValue.fontSize === 'number' ? `${actualValue.fontSize}px` : actualValue.fontSize) : undefined,
+      fontWeight: actualValue.fontWeight,
+      fontStyle: actualValue.fontStyle,
+      fontFamily: actualValue.fontFamily, // v8.4: Font Family Support
+      textAlign: actualValue.textAlign,
+      lineHeight: actualValue.lineHeight,
+      letterSpacing: actualValue.letterSpacing,
+      textTransform: actualValue.textTransform,
+      textDecoration: actualValue.textDecoration,
+      textShadow: textShadow, // v8.4: Advanced Shadow Support
+      backgroundColor: actualValue.backgroundColor,
+      borderRadius: actualValue.borderRadius ? (typeof actualValue.borderRadius === 'number' ? `${actualValue.borderRadius}px` : actualValue.borderRadius) : undefined,
+      padding: actualValue.padding,
+      opacity: actualValue.opacity,
+      margin: actualValue.margin,
+      display: actualValue.display,
+      ...style
+    };
+
+    // Clean undefined keys
+    return Object.fromEntries(Object.entries(styles).filter(([_, v]) => v !== undefined));
+  }, [actualValue, isObject, style]);
+
+  if (!isDev) {
+    return <Tag className={className} style={individualStyle} {...props}>{content}</Tag>;
+  }
+
+  // 4. Enhanced Metadata for Dock
+  const dockBind = JSON.stringify({
+    file: binding.file,
+    index: binding.index,
+    key: binding.key
+  });
+
+  // Dynamic type detection
+  const tagStr = typeof Tag === 'string' ? Tag.toLowerCase() : '';
+  const dockType = tagStr.match(/^h[1-6]$/) ? 'heading' : (tagStr === 'p' ? 'paragraph' : 'text');
+  
+  // Human readable label (Site Title -> site_title)
+  const dockLabel = field ? field.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : binding.key;
 
   return (
     <Tag
-      ref={elementRef}
-      contentEditable={true}
-      suppressContentEditableWarning={true}
-      onBlur={handleSave}
-      onKeyDown={onKeyDown}
       data-dock-bind={dockBind}
-      data-dock-type="text"
-      className={`${className} outline-none transition-all duration-200 hover:bg-blue-500/10 hover:ring-1 hover:ring-blue-300 rounded cursor-text focus:ring-2 focus:ring-blue-500 focus:bg-transparent`}
-      style={style}
-      title="Klik om tekst aan te passen"
+      data-dock-type={dockType}
+      data-dock-label={dockLabel}
+      className={`${className} cursor-pointer hover:ring-2 hover:ring-blue-400/40 hover:bg-blue-50/5 rounded-sm transition-all duration-200`}
+      style={individualStyle}
+      title={`Shift+Klik om "${dockLabel}" te bewerken in de Dock`}
       {...props}
     >
-      {currentValue}
+      {content}
     </Tag>
   );
 }
