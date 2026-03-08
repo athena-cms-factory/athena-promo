@@ -55,10 +55,10 @@ Athena v8.1 is an automated factory featuring the v33 Sync Bridge and Modular Co
 ```text
 /home/kareltestspecial/0-IT/2-Productie/athena/athena-x/
 ├── GEMINI.md                     # Master Context for the Factory (THIS FILE)
-├── dock/                         # Visual Editor (Athena Dock) React App (Port 4002)
+├── dock/                         # Visual Editor (Athena Dock) React App (Port 5002)
 │   ├── public/sites.json         # Central registry of all generated sites
 │   └── src/components/           # Dock UI components (DesignControls, DockFrame)
-├── factory/                      # The Factory Engine and Resources (Dashboard Port 4001)
+├── factory/                      # The Factory Engine and Resources (Dashboard Port 5001)
 │   ├── dashboard/                # 🌐 Web GUI (athena.js)
 │   ├── 2-templates/              # Core boilerplates and generation logic
 │   ├── 3-sitetypes/              # Business-specific blueprints
