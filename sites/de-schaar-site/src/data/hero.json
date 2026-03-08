@@ -1,6 +1,18 @@
 [
   {
-    "title": "De Schaare",
+    "title": {
+      "text": "De Schaare",
+      "color": "",
+      "fontSize": "",
+      "fontWeight": "normal",
+      "fontStyle": "normal",
+      "textAlign": "left",
+      "fontFamily": "",
+      "shadowX": -3,
+      "shadowY": 0,
+      "shadowBlur": 0,
+      "shadowColor": "#ff0000"
+    },
     "hero_image": "hero_de-schaar-1.png",
     "hero_overlay_opacity": 0.2
   }
