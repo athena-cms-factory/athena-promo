@@ -15,17 +15,17 @@ const ShowcaseSection = ({ sectionName, items, sectionStyle }) => {
     }
     setLoading(true);
     try {
-      const response = await fetch('https://api.github.com/users/athenacmsfactory/repos?sort=updated&per_page=100');
+      const response = await fetch('https://api.github.com/orgs/athena-cms-factory/repos?sort=updated&per_page=100');
       const repos = await response.json();
       
       const data = repos
-        .filter(repo => !repo.fork && repo.name !== 'athena-x') // Optioneel: filter eigen engine/monorepo uit
+        .filter(repo => !repo.fork && repo.name !== 'athena-x') 
         .map(repo => ({
           name: repo.name.replace(/-/g, ' '),
           type: repo.language || 'Project',
           description: repo.description || 'Geen omschrijving beschikbaar.',
           githubLink: repo.html_url,
-          liveLink: repo.has_pages ? `https://athenacmsfactory.github.io/${repo.name}/` : repo.homepage
+          liveLink: repo.has_pages ? `https://athena-cms-factory.github.io/${repo.name}/` : repo.homepage
         }));
 
       setArchiveData(data);
