@@ -7,7 +7,7 @@
       "label": "BEKIJK PROJECT",
       "url": "https://athena-cms-factory.github.io/de-schaar-site"
     },
-    "image": "technische.png"
+    "image": "de-buitenkant-van-een-moderne-en-uitnodigende-kaps1-1770992371857.jpeg"
   },
   {
     "name": "Bakkerij Artisanaal",
@@ -17,7 +17,7 @@
       "label": "BEKIJK PROJECT",
       "url": "https://athena-cms-factory.github.io/demo-bakkerij"
     },
-    "image": "artisanal-1-1770398212360.jpeg"
+    "image": "rustiek_meergranen.png"
   },
   {
     "name": "Belgian Chocolate Shop",
@@ -27,7 +27,7 @@
       "label": "BEKIJK PROJECT",
       "url": "https://athena-cms-factory.github.io/chocolade-shop/"
     },
-    "image": "hero-1770476346310.jpeg"
+    "image": "vullen.jpeg"
   },
   {
     "name": "Urban Soles",
@@ -37,7 +37,7 @@
       "label": "BEKIJK PROJECT",
       "url": "https://athena-cms-factory.github.io/urban-soles/"
     },
-    "image": "1-1770476441932-1770476982985.jpg"
+    "image": "snkr-003.jpg"
   },
   {
     "name": "Code Crafters",
@@ -47,7 +47,7 @@
       "label": "BEKIJK DEMO",
       "url": "https://athena-cms-factory.github.io/code-crafters/"
     },
-    "image": "showcase-athena-pro.jpg"
+    "image": "download-1.jpg"
   },
   {
     "name": "Cloud Architects",
@@ -57,7 +57,7 @@
       "label": "BEKIJK DEMO",
       "url": "https://athena-cms-factory.github.io/cloud-architects/"
     },
-    "image": "showcase-cloud-architects.jpg"
+    "image": "download-3.jpg"
   },
   {
     "name": "Pure Relaxation",
@@ -67,7 +67,7 @@
       "label": "BEKIJK DEMO",
       "url": "https://athena-cms-factory.github.io/pure-relaxation/"
     },
-    "image": "showcase-pure-relaxation.jpg"
+    "image": "hero-bg.webp"
   },
   {
     "name": "Urban Oasis",
@@ -77,6 +77,6 @@
       "label": "BEKIJK DEMO",
       "url": "https://athena-cms-factory.github.io/urban-oasis/"
     },
-    "image": "showcase-urban-oasis.jpg"
+    "image": "download-2.jpg"
   }
 ]
