@@ -18,5 +18,33 @@
   "_links_config": {
     "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=1601805182",
     "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1601805182"
+  },
+  "hero": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=1265355836",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1265355836"
+  },
+  "innovatie": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=156911189",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=156911189"
+  },
+  "intro": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=466415457",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=466415457"
+  },
+  "proces": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=1462178289",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1462178289"
+  },
+  "showcase": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=341328362",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=341328362"
+  },
+  "style_bindings": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=55004811",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=55004811"
+  },
+  "voordelen": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=18720631",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=18720631"
   }
 }
