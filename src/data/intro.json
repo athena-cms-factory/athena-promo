@@ -1,8 +1,8 @@
 [
   {
-    "titel": "Welkom bij Athena Promo",
-    "tekst": "Wij maken websites die echt resultaat opleveren voor uw business.",
-    "afbeelding": "https://picsum.photos/800/600",
+    "titel": "Over Athena Promo",
+    "missie_visie": "Wij maken websites die echt resultaat opleveren voor uw business door middel van automatisatie en modern design.",
+    "foto_url": "https://picsum.photos/800/600",
     "cta_label": "Lees Meer",
     "cta_url": "#voordelen"
   }
