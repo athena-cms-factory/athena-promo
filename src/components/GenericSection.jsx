@@ -6,7 +6,6 @@ import EditableLink from './EditableLink';
 const GenericSection = ({ data, sectionName, layout = 'list', features = {}, style = {} }) => {
     if (!data || data.length === 0) return null;
     
-    // Bepaal de effectieve layout: 'voordelen' en 'showcase' willen vaak een grid
     const effectiveLayout = (sectionName === 'voordelen' || sectionName === 'showcase') ? 'grid' : layout;
 
     const iconMap = {
@@ -24,8 +23,6 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
 
     const renderIcon = (iconData) => {
         if (!iconData || typeof iconData !== 'string' || iconData.length < 2) return null;
-        
-        // Check of het een SVG pad is (begint met M)
         if (iconData.startsWith('M')) {
             return (
                 <svg className="w-10 h-10 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -33,18 +30,15 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
                 </svg>
             );
         }
-        
-        // Anders: FontAwesome class (alleen als het geen rauwe tekst is)
         if (iconData.includes('fa-') || iconMap[iconData.toLowerCase()]) {
             const iconClass = iconMap[iconData.toLowerCase()] || iconData;
             return <i className={`fa-solid ${iconClass} text-4xl text-accent`}></i>;
         }
-
         return null;
     };
 
     return (
-        <section id={sectionName} data-dock-section={sectionName} className="py-24 px-6 bg-[var(--color-background)]" style={style}>
+        <section id={sectionName} data-dock-section={sectionName} className="py-24 px-6 bg-[var(--color-background)] text-[var(--color-text)]" style={style}>
             <div className="max-w-6xl mx-auto">
                 <div className="flex flex-col items-center mb-16 text-center">
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-4 capitalize">
@@ -57,39 +51,46 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
                     {data.map((item, index) => {
                         const titleKey = Object.keys(item).find(k => /naam|titel|onderwerp|header|title/i.test(k));
                         const iconKey = Object.keys(item).find(k => /icoon|icon/i.test(k));
-                        const textKeys = Object.keys(item).filter(k => k !== titleKey && k !== iconKey && !/foto|afbeelding|url|image|img|link|id/i.test(k));
                         const imgKey = Object.keys(item).find(k => /foto|afbeelding|url|image|img/i.test(k));
+                        const textKeys = Object.keys(item).filter(k => k !== titleKey && k !== iconKey && k !== imgKey && !/link|id/i.test(k));
                         const isEven = index % 2 === 0;
 
                         if (effectiveLayout === 'grid') {
                             const iconElement = renderIcon(item[iconKey]);
                             return (
-                                <div key={index} className="flex flex-col items-center text-center bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 hover:shadow-2xl transition-all duration-300 group">
-                                    {iconElement && (
-                                        <div className="w-20 h-20 bg-accent/10 rounded-3xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                                            {iconElement}
+                                <div key={index} className="flex flex-col overflow-hidden bg-white/5 backdrop-blur-sm rounded-[2.5rem] shadow-xl border border-white/10 hover:border-accent/30 transition-all duration-500 group">
+                                    {imgKey && item[imgKey] && (
+                                        <div className="w-full aspect-video overflow-hidden">
+                                            <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                         </div>
                                     )}
-                                    {titleKey && (
-                                        <h3 className="text-2xl font-bold text-primary mb-4 leading-tight">
-                                            <EditableText value={item[titleKey]} cmsBind={{ file: sectionName, index, key: titleKey }} />
-                                        </h3>
-                                    )}
-                                    {textKeys.map(tk => (
-                                        <div key={tk} className="text-slate-600 text-lg leading-relaxed mb-4">
-                                            <EditableText value={item[tk]} cmsBind={{ file: sectionName, index, key: tk }} />
-                                        </div>
-                                    ))}
-                                    {(item.link || item.link_url) && (
-                                        <EditableLink
-                                            label={item.link || "Bekijk"}
-                                            url={item.link_url || item.link}
-                                            table={sectionName}
-                                            field="link"
-                                            id={index}
-                                            className="text-accent font-bold hover:underline mt-auto"
-                                        />
-                                    )}
+                                    <div className="p-10 flex flex-col items-center text-center flex-1">
+                                        {iconElement && (
+                                            <div className="w-20 h-20 bg-accent/10 rounded-3xl flex items-center justify-center mb-8 shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                                                {iconElement}
+                                            </div>
+                                        )}
+                                        {titleKey && (
+                                            <h3 className="text-2xl font-bold text-primary mb-4 leading-tight">
+                                                <EditableText value={item[titleKey]} cmsBind={{ file: sectionName, index, key: titleKey }} />
+                                            </h3>
+                                        )}
+                                        {textKeys.map(tk => (
+                                            <div key={tk} className="text-slate-400 text-lg leading-relaxed mb-4">
+                                                <EditableText value={item[tk]} cmsBind={{ file: sectionName, index, key: tk }} />
+                                            </div>
+                                        ))}
+                                        {(item.link || item.link_url) && (
+                                            <EditableLink
+                                                label={item.link || "Bekijk Project"}
+                                                url={item.link_url || item.link}
+                                                table={sectionName}
+                                                field="link"
+                                                id={index}
+                                                className="text-accent font-bold hover:underline mt-auto pt-6"
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             );
                         }
@@ -97,20 +98,18 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
                         return (
                             <div key={index} className={`flex flex-col items-center text-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-20`}>
                                 {imgKey && item[imgKey] && (
-                                    <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
+                                    <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white/5">
                                         <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
                                     </div>
                                 )}
                                 <div className="flex-1">
                                     {titleKey && (
-                                        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
-                                            <h3 className="text-3xl font-serif font-bold text-primary leading-tight flex-1">
-                                                <EditableText value={item[titleKey]} cmsBind={{ file: sectionName, index, key: titleKey }} />
-                                            </h3>
-                                        </div>
+                                        <h3 className="text-3xl font-serif font-bold text-primary leading-tight mb-8">
+                                            <EditableText value={item[titleKey]} cmsBind={{ file: sectionName, index, key: titleKey }} />
+                                        </h3>
                                     )}
                                     {textKeys.map(tk => (
-                                        <div key={tk} className="text-xl leading-relaxed text-slate-600 mb-6 font-light">
+                                        <div key={tk} className="text-xl leading-relaxed text-slate-400 mb-6 font-light">
                                             <EditableText value={item[tk]} cmsBind={{ file: sectionName, index, key: tk }} />
                                         </div>
                                     ))}
