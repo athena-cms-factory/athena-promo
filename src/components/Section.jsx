@@ -1,57 +1,53 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
+import Hero from './Hero';
+import AboutSection from './AboutSection'; // Voor 'intro'
+import CTA from './CTA';
+import Testimonials from './Testimonials';
+import Team from './Team';
+import FAQ from './FAQ';
 import GenericSection from './GenericSection';
-import { useCart } from './CartContext'; 
 
-const Section = ({ data }) => {
-  const sectionOrder = data.section_order || [];
-  const layoutSettings = data.layout_settings || {};
+// Mapping van Sheet Sectienaam -> React Component
+const SECTION_COMPONENTS = {
+  hero: Hero,
+  intro: AboutSection,
+  voordelen: GenericSection, // We gebruiken GenericSection als fallback voor eenvoudige lijstjes
+  showcase: GenericSection,
+  innovatie: GenericSection,
+  proces: GenericSection,
+  cta: CTA,
+  testimonials: Testimonials,
+  team: Team,
+  faq: FAQ
+};
 
-  useEffect(() => {
-    if (window.athenaScan) {
-      window.athenaScan(data);
-    }
-  }, [data, sectionOrder]);
+export default function Section({ data }) {
+  // v8.8 Modular Order Logic
+  const orderSource = data?._section_order || data?.section_order || [];
+  const sectionOrder = orderSource.map(item => typeof item === 'object' ? item.sectie : item).filter(Boolean);
 
-  const getComponent = (sectionName) => {
-      const lower = sectionName.toLowerCase();
-      const layout = layoutSettings[sectionName] || 'list';
-
-      // Mapping Logic (Synced with Registry)
-      if (lower === 'basis' || lower === 'basisgegevens') return Hero;
-      if (lower.includes('testimonial') || lower.includes('review') || lower.includes('ervaring')) return Testimonials;
-      if (lower.includes('team') || lower.includes('medewerker') || lower.includes('wie_zijn_wij')) return Team;
-      if (lower.includes('faq') || lower.includes('vragen')) return FAQ;
-      if (lower.includes('cta') || lower.includes('banner') || lower.includes('actie')) return CTA;
-      if (lower.includes('product') || lower.includes('shop')) return ProductGrid;
-      
-      return GenericSection;
-  };
+  // Fallback order if _section_order is missing or corrupt
+  const finalOrder = sectionOrder.length > 0 ? sectionOrder : ['hero', 'intro', 'voordelen', 'footer'];
 
   return (
-    <div className="flex flex-col">
-      {sectionOrder.map((sectionName, idx) => {
-        const items = data[sectionName] || [];
-        if (items.length === 0) return null;
-        
-        const Component = getComponent(sectionName);
-        const layout = layoutSettings[sectionName] || 'list';
-        const sectionSettings = data.section_settings?.[sectionName] || {};
-        const sectionBgColor = sectionSettings.backgroundColor || null;
-        const sectionStyle = sectionBgColor ? { backgroundColor: sectionBgColor } : {};
+    <div className="athena-sections-container">
+      {finalOrder.map((sectionName, index) => {
+        // Skip header/footer in the main section loop
+        if (['header', 'footer'].includes(sectionName.toLowerCase())) return null;
+
+        const Component = SECTION_COMPONENTS[sectionName.toLowerCase()] || GenericSection;
+        const sectionData = data[sectionName] || [];
 
         return (
+          <section key={`${sectionName}-${index}`} id={sectionName} className="athena-section">
             <Component 
-                key={idx} 
-                sectionName={sectionName} 
-                data={items} 
-                layout={layout}
-                style={sectionStyle}
-                features={{"ecommerce":false,"google_search_links":false,"search_context":"Athena CMS Factory website laten maken KMO Vlaanderen AI automatisatie"}} 
+              data={sectionData} 
+              fullData={data}
+              sectionName={sectionName}
             />
+          </section>
         );
       })}
     </div>
   );
-};
-
-export default Section;
+}

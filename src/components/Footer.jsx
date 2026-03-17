@@ -3,15 +3,16 @@ import EditableText from './EditableText';
 import EditableLink from './EditableLink';
 
 export default function Footer({ data }) {
-  const settingsSource = data?.site_settings || {};
-  const settings = Array.isArray(settingsSource) ? (settingsSource[0] || {}) : settingsSource;
+  // v8.8 Modular Data Logic
+  const footerContent = data?.footer?.[0] || {};
   const contactInfo = data?.contact?.[0] || {};
+  const siteSettings = data?._site_settings?.[0] || data?.site_settings?.[0] || {};
   
-  const naam = settings.site_name || 'athena-promo';
-  const email = contactInfo.email || settings.email || '';
-  const locatie = contactInfo.location || '';
-  const btw = contactInfo.btw_nummer || contactInfo.btw || '';
-  const linkedin = contactInfo.linkedin_url || contactInfo.linkedin || '';
+  const naam = siteSettings.site_name || 'athena-promo';
+  const email = contactInfo.email || '';
+  const locatie = contactInfo.locatie || '';
+  const btw = contactInfo.btw_nummer || '';
+  const linkedin = contactInfo.linkedin_url || '';
 
   return (
     <footer className="py-24 bg-slate-900 text-slate-400 border-t border-slate-800 relative overflow-hidden">
@@ -20,19 +21,17 @@ export default function Footer({ data }) {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-20 mb-20">
           
-          {/* Brand Identity */}
+          {/* Footer Titel & Beschrijving (Klant-bewerkbaar) */}
           <div className="space-y-6">
             <h3 className="text-3xl font-serif font-bold text-white">
-              <EditableText value={naam} cmsBind={{file: 'site_settings', index: 0, key: 'site_name'}} />
+              <EditableText value={footerContent.titel || naam} cmsBind={{file: 'footer', index: 0, key: 'titel'}} />
             </h3>
-            {settings.tagline && (
-              <p className="text-lg leading-relaxed font-light">
-                <EditableText value={settings.tagline} cmsBind={{file: 'site_settings', index: 0, key: 'tagline'}} />
-              </p>
-            )}
+            <p className="text-lg leading-relaxed font-light">
+              <EditableText value={footerContent.beschrijving || siteSettings.tagline || ''} cmsBind={{file: 'footer', index: 0, key: 'beschrijving'}} />
+            </p>
           </div>
 
-          {/* Contact Details */}
+          {/* Contact Details (Klant-bewerkbaar) */}
           <div className="space-y-6">
             <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Contact</h4>
             <ul className="space-y-4">
@@ -45,49 +44,36 @@ export default function Footer({ data }) {
               {locatie && (
                 <li className="flex items-center gap-4">
                   <i className="fa-solid fa-location-dot text-accent w-5"></i>
-                  <EditableText value={locatie} cmsBind={{file: 'contact', index: 0, key: 'location'}} />
+                  <EditableText value={locatie} cmsBind={{file: 'contact', index: 0, key: 'locatie'}} />
                 </li>
               )}
-              {linkedin && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-brands fa-linkedin text-accent w-5"></i>
-                  <EditableLink 
-                    label={contactInfo.linkedin_label || "LinkedIn Profile"} 
-                    url={contactInfo.linkedin_url_url || linkedin} 
-                    table="contact" 
-                    field="linkedin_url" 
-                    id={0} 
-                    className="hover:text-white transition-colors"
-                  />
+              {btw && (
+                <li className="flex items-center gap-4 text-sm opacity-60">
+                  <span className="font-bold text-accent">BTW:</span>
+                  <EditableText value={btw} cmsBind={{file: 'contact', index: 0, key: 'btw_nummer'}} />
                 </li>
               )}
             </ul>
           </div>
 
-          {/* Legal / Company Info */}
+          {/* Socials & Copyright */}
           <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Bedrijfsgegevens</h4>
-            <div className="space-y-4">
-              {btw && (
-                <p className="flex items-center gap-2">
-                  <span className="text-slate-500">BTW:</span> 
-                  <EditableText value={btw} cmsBind={{file: 'contact', index: 0, key: 'btw_nummer'}} />
-                </p>
-              )}
-              <p className="text-sm font-light leading-relaxed">
-                <EditableText value={settings.footer_text || 'Professionele website geleverd door Athena CMS Factory.'} cmsBind={{file: 'site_settings', index: 0, key: 'footer_text'}} />
-              </p>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Copyright Bar */}
-        <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
-          <p>&copy; {new Date().getFullYear()} {naam}. Alle rechten voorbehouden.</p>
-          <div className="flex items-center gap-2 opacity-50">
-            <img src="./athena-icon.svg" alt="Athena Logo" className="w-5 h-5" />
-            <span>Gemaakt met Athena CMS Factory</span>
+             <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Volg Ons</h4>
+             <div className="flex gap-4">
+                {linkedin && (
+                   <EditableLink 
+                    label="LinkedIn" 
+                    url={linkedin} 
+                    table="contact" 
+                    field="linkedin_url" 
+                    id={0} 
+                    className="hover:text-accent transition-colors"
+                  />
+                )}
+             </div>
+             <p className="text-sm opacity-50 mt-10">
+                <EditableText value={footerContent.copy_tekst || `© ${new Date().getFullYear()} ${naam}`} cmsBind={{file: 'footer', index: 0, key: 'copy_tekst'}} />
+             </p>
           </div>
         </div>
       </div>
