@@ -3,9 +3,11 @@ import EditableMedia from './EditableMedia';
 import EditableText from './EditableText';
 import EditableLink from './EditableLink';
 
-const GenericSection = ({ data, sectionName, layout = 'grid', features = {}, style = {} }) => {
+const GenericSection = ({ data, sectionName, layout = 'list', features = {}, style = {} }) => {
     if (!data || data.length === 0) return null;
-    const hasSearchLinks = !!features.google_search_links;
+    
+    // Bepaal de effectieve layout: 'voordelen' en 'showcase' willen vaak een grid
+    const effectiveLayout = (sectionName === 'voordelen' || sectionName === 'showcase') ? 'grid' : layout;
 
     const iconMap = {
         'table': 'fa-table-columns',
@@ -21,10 +23,10 @@ const GenericSection = ({ data, sectionName, layout = 'grid', features = {}, sty
     };
 
     const renderIcon = (iconData) => {
-        if (!iconData) return null;
+        if (!iconData || typeof iconData !== 'string' || iconData.length < 2) return null;
         
         // Check of het een SVG pad is (begint met M)
-        if (typeof iconData === 'string' && iconData.startsWith('M')) {
+        if (iconData.startsWith('M')) {
             return (
                 <svg className="w-10 h-10 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d={iconData} />
@@ -32,13 +34,13 @@ const GenericSection = ({ data, sectionName, layout = 'grid', features = {}, sty
             );
         }
         
-        // Anders: FontAwesome class
-        const iconClass = typeof iconData === 'string' ? (iconMap[iconData.toLowerCase()] || `fa-${iconData.toLowerCase()}`) : 'fa-star';
-        return <i className={`fa-solid ${iconClass} text-4xl text-accent`}></i>;
-    };
+        // Anders: FontAwesome class (alleen als het geen rauwe tekst is)
+        if (iconData.includes('fa-') || iconMap[iconData.toLowerCase()]) {
+            const iconClass = iconMap[iconData.toLowerCase()] || iconData;
+            return <i className={`fa-solid ${iconClass} text-4xl text-accent`}></i>;
+        }
 
-    const getGoogleSearchUrl = (query) => {
-        return `https://www.google.com/search?q=${encodeURIComponent(query + ' ' + (features.search_context || ''))}`;
+        return null;
     };
 
     return (
@@ -51,7 +53,7 @@ const GenericSection = ({ data, sectionName, layout = 'grid', features = {}, sty
                     <div className="h-1.5 w-24 bg-accent rounded-full"></div>
                 </div>
 
-                <div className={layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12' : 'space-y-20'}>
+                <div className={effectiveLayout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12' : 'space-y-20'}>
                     {data.map((item, index) => {
                         const titleKey = Object.keys(item).find(k => /naam|titel|onderwerp|header|title/i.test(k));
                         const iconKey = Object.keys(item).find(k => /icoon|icon/i.test(k));
@@ -59,28 +61,41 @@ const GenericSection = ({ data, sectionName, layout = 'grid', features = {}, sty
                         const imgKey = Object.keys(item).find(k => /foto|afbeelding|url|image|img/i.test(k));
                         const isEven = index % 2 === 0;
 
-                        if (layout === 'grid') {
+                        if (effectiveLayout === 'grid') {
+                            const iconElement = renderIcon(item[iconKey]);
                             return (
                                 <div key={index} className="flex flex-col items-center text-center bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 hover:shadow-2xl transition-all duration-300 group">
-                                    <div className="w-20 h-20 bg-accent/10 rounded-3xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                                        {renderIcon(item[iconKey] || 'star')}
-                                    </div>
+                                    {iconElement && (
+                                        <div className="w-20 h-20 bg-accent/10 rounded-3xl flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                            {iconElement}
+                                        </div>
+                                    )}
                                     {titleKey && (
                                         <h3 className="text-2xl font-bold text-primary mb-4 leading-tight">
                                             <EditableText value={item[titleKey]} cmsBind={{ file: sectionName, index, key: titleKey }} />
                                         </h3>
                                     )}
                                     {textKeys.map(tk => (
-                                        <div key={tk} className="text-slate-600 text-lg leading-relaxed">
+                                        <div key={tk} className="text-slate-600 text-lg leading-relaxed mb-4">
                                             <EditableText value={item[tk]} cmsBind={{ file: sectionName, index, key: tk }} />
                                         </div>
                                     ))}
+                                    {(item.link || item.link_url) && (
+                                        <EditableLink
+                                            label={item.link || "Bekijk"}
+                                            url={item.link_url || item.link}
+                                            table={sectionName}
+                                            field="link"
+                                            id={index}
+                                            className="text-accent font-bold hover:underline mt-auto"
+                                        />
+                                    )}
                                 </div>
                             );
                         }
 
                         return (
-                            <div key={index} className={`flex flex-col items-center text-center ${layout === 'list' ? '' : (isEven ? 'md:flex-row' : 'md:flex-row-reverse')} gap-12 md:gap-20`}>
+                            <div key={index} className={`flex flex-col items-center text-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-20`}>
                                 {imgKey && item[imgKey] && (
                                     <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
                                         <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
