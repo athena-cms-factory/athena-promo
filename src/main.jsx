@@ -7,25 +7,33 @@ import './dock-connector.js';
 
 async function init() {
   const data = {};
-  // Dummy data loading logic for local development
+  
   try {
-    
+    // v8.8 Dynamic Data Loader (Modular Standard)
+    // We laden alle JSON bestanden in src/data/ in
     const dataModules = import.meta.glob('./data/*.json', { eager: true });
-    const getData = (name) => {
-        const key = Object.keys(dataModules).find(k => k.toLowerCase().endsWith(`/${name.toLowerCase()}.json`));
-        return key ? dataModules[key].default : null;
-    };
-    data['section_order'] = getData('section_order') || [];
-    data['site_settings'] = getData('site_settings') || {};
-    data['display_config'] = getData('display_config') || { sections: {} };
-    data['layout_settings'] = getData('layout_settings') || {};
-    for (const sectionName of data['section_order']) {
-        const sectionData = getData(sectionName);
-        data[sectionName] = sectionData ? (Array.isArray(sectionData) ? sectionData : [sectionData]) : [];
-    }
+    
+    Object.keys(dataModules).forEach(path => {
+      // Bestandsnaam extraheren (bijv. ./data/_site_settings.json -> _site_settings)
+      const fileName = path.split('/').pop().replace('.json', '');
+      data[fileName] = dataModules[path].default || dataModules[path];
+    });
+
+    // Alias mapping voor backwards compatibility (site_settings -> _site_settings)
+    const aliases = ['site_settings', 'style_config', 'section_order', 'layout_settings', 'display_config', 'schema'];
+    aliases.forEach(alias => {
+      if (!data[alias] && data[`_${alias}`]) {
+        data[alias] = data[`_${alias}`];
+      }
+    });
+
+    // v32+ Global exposure for Dock & Components
+    window.__ATHENA_DATA__ = data;
     if (window.athenaScan) window.athenaScan(data);
+    
+    console.log("🚀 Athena Data Loaded:", Object.keys(data));
   } catch (e) {
-    console.error("Data laad fout:", e);
+    console.error("❌ Data laad fout:", e);
   }
 
   ReactDOM.createRoot(document.getElementById('root')).render(
