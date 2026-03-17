@@ -3,7 +3,7 @@
     "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit",
     "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1536339218"
   },
-  "site_settings": {
+  "_site_settings": {
     "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit",
     "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=0"
   },
@@ -39,12 +39,44 @@
     "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=341328362",
     "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=341328362"
   },
-  "style_bindings": {
+  "_style_bindings": {
     "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=55004811",
     "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=55004811"
   },
   "voordelen": {
     "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=18720631",
     "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=18720631"
+  },
+  "_display_config": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=805105660",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=805105660"
+  },
+  "_layout_settings": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=111682383",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=111682383"
+  },
+  "_schema": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=449607884",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=449607884"
+  },
+  "_section_order": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=1208734856",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1208734856"
+  },
+  "_site_settings": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=1464230476",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1464230476"
+  },
+  "_style_bindings": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=1972110651",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=1972110651"
+  },
+  "footer": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=920371019",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=920371019"
+  },
+  "header": {
+    "editUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/edit#gid=855007310",
+    "exportUrl": "https://docs.google.com/spreadsheets/d/1-ljS9jUuEO1h04iTYfz68yIIzcQnsS7oeDFvE_X2Cnc/export?format=tsv&gid=855007310"
   }
 }

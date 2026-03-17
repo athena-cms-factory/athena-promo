@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "titel": "Onze Aanpak",
+    "intro_tekst": "Onze innovatieve tools zorgen voor een vlekkeloze ervaring.",
+    "item_1_titel": "AI-Driven Content",
+    "item_1_tekst": "Teksten worden automatisch gegenereerd.",
+    "item_2_titel": "Real-time Sync",
+    "item_2_tekst": "Wijzigingen direct zichtbaar."
+  }
+]

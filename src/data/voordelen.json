@@ -1,18 +1,17 @@
 [
   {
-    "points": [
-      {
-        "title": "Vertrouwdheid met Google Sheets",
-        "description": "Gebruik Google Sheets als uw CMS en profiteer van de vertrouwdheid en gemakkelijke toegang tot uw content."
-      },
-      {
-        "title": "Zero Touch Onderhoud met AI-Agents",
-        "description": "Onze AI-Agents zorgen voor het onderhoud van uw website, waardoor u zich kan focussen op uw core business."
-      },
-      {
-        "title": "React 19 Performance",
-        "description": "Geniet van de snelle en efficiënte performance van React 19 en zorg ervoor dat uw website altijd up-to-date is."
-      }
-    ]
+    "titel": "Snelheid",
+    "icoon": "M13 10V3L4 14h7v7l9-11h-7z",
+    "beschrijving": "Uw website is razendsnel dankzij de modernste Vite & React technologie."
+  },
+  {
+    "titel": "Beheer",
+    "icoon": "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+    "beschrijving": "Pas teksten en afbeeldingen aan via Google Sheets, zonder technische kennis."
+  },
+  {
+    "titel": "Design",
+    "icoon": "M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a1 1 0 010 2H5v12a2 2 0 002 2h12a2 2 0 002-2v-1M7 7h10",
+    "beschrijving": "Strakke, moderne designs die perfect schalen op elk toestel."
   }
 ]

@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "titel": "Neem contact op",
+    "email": "info@athena-promo.be",
+    "telefoon": "+32 400 00 00 00",
+    "locatie": "Gent, België",
+    "btw_nummer": "BE 0000.000.000",
+    "linkedin_url": "#",
+    "facebook_url": "#",
+    "instagram_url": "#"
+  }
+]

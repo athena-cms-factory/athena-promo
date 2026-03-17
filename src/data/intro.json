@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "titel": "Welkom bij Athena Promo",
+    "tekst": "Wij maken websites die echt resultaat opleveren voor uw business.",
+    "afbeelding": "https://picsum.photos/800/600",
+    "cta_label": "Lees Meer",
+    "cta_url": "#voordelen"
+  }
+]

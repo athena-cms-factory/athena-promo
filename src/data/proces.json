@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "stap": "1",
+    "titel": "Ontwerp",
+    "beschrijving": "We ontwerpen uw droomwebsite samen met u."
+  },
+  {
+    "stap": "2",
+    "titel": "Lancering",
+    "beschrijving": "Uw site staat binnen enkele dagen online."
+  }
+]
