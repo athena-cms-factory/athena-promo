@@ -1,6 +1,4 @@
 import React from 'react';
-import EditableText from './EditableText';
-import EditableLink from './EditableLink';
 
 export default function Footer({ data }) {
   // v8.8 Modular Data Logic
@@ -24,10 +22,10 @@ export default function Footer({ data }) {
           {/* Footer Titel & Beschrijving (Klant-bewerkbaar) */}
           <div className="space-y-6">
             <h3 className="text-3xl font-serif font-bold text-white">
-              <EditableText value={footerContent.titel || naam} cmsBind={{file: 'footer', index: 0, key: 'titel'}} />
+              <span data-dock-type="text" data-dock-bind="footer.0.titel">{footerContent.titel || naam}</span>
             </h3>
             <p className="text-lg leading-relaxed font-light">
-              <EditableText value={footerContent.beschrijving || siteSettings.tagline || ''} cmsBind={{file: 'footer', index: 0, key: 'beschrijving'}} />
+              <span data-dock-type="text" data-dock-bind="footer.0.beschrijving">{footerContent.beschrijving || siteSettings.tagline || ''}</span>
             </p>
           </div>
 
@@ -38,19 +36,19 @@ export default function Footer({ data }) {
               {email && (
                 <li className="flex items-center gap-4">
                   <i className="fa-solid fa-envelope text-accent w-5"></i>
-                  <EditableText value={email} cmsBind={{file: 'contact', index: 0, key: 'email'}} />
+                  <span data-dock-type="text" data-dock-bind="contact.0.email">{email}</span>
                 </li>
               )}
               {locatie && (
                 <li className="flex items-center gap-4">
                   <i className="fa-solid fa-location-dot text-accent w-5"></i>
-                  <EditableText value={locatie} cmsBind={{file: 'contact', index: 0, key: 'locatie'}} />
+                  <span data-dock-type="text" data-dock-bind="contact.0.locatie">{locatie}</span>
                 </li>
               )}
               {btw && (
                 <li className="flex items-center gap-4 text-sm opacity-60">
                   <span className="font-bold text-accent">BTW:</span>
-                  <EditableText value={btw} cmsBind={{file: 'contact', index: 0, key: 'btw_nummer'}} />
+                  <span data-dock-type="text" data-dock-bind="contact.0.btw_nummer">{btw}</span>
                 </li>
               )}
             </ul>
@@ -61,18 +59,11 @@ export default function Footer({ data }) {
              <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Volg Ons</h4>
              <div className="flex gap-4">
                 {linkedin && (
-                   <EditableLink 
-                    label="LinkedIn" 
-                    url={linkedin} 
-                    table="contact" 
-                    field="linkedin_url" 
-                    id={0} 
-                    className="hover:text-accent transition-colors"
-                  />
+                   <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
                 )}
              </div>
              <p className="text-sm opacity-50 mt-10">
-                <EditableText value={footerContent.copy_tekst || `© ${new Date().getFullYear()} ${naam}`} cmsBind={{file: 'footer', index: 0, key: 'copy_tekst'}} />
+                <span data-dock-type="text" data-dock-bind="footer.0.copy_tekst">{footerContent.copy_tekst || `© ${new Date().getFullYear()}`}</span>
              </p>
           </div>
         </div>

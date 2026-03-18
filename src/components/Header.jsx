@@ -1,31 +1,29 @@
-import React, { useState } from 'react';
-import EditableText from './EditableText';
-import EditableMedia from './EditableMedia';
-import EditableLink from './EditableLink';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-function Header({ siteSettings: initialSettings = {} }) {
+const Header = ({ siteSettings: settings, data }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  // v8.8 Modular Data Logic
-  const data = window.__ATHENA_DATA__ || {};
-  const headerContent = data.header?.[0] || {};
-  const settings = Array.isArray(initialSettings) ? (initialSettings[0] || {}) : (initialSettings || {});
-  
-  const siteName = headerContent.titel || settings.site_name || 'athena-promo';
-  const slogan = headerContent.slogan || settings.tagline || '';
-  const logoText = headerContent.logo_tekst || settings.logo_text || siteName;
+  // v8.8 Modular Data Access
+  const headerContent = data?.header?.[0] || data?._header?.[0] || {};
+  const logoText = settings.site_name || "ATHENA";
   const logoChar = logoText.charAt(0).toUpperCase();
-
   const displayLogo = settings.site_logo_image || "athena-icon.svg";
 
   const handleScroll = (e) => {
+    // 🔱 v8.1 Shift+Click Standard
+    if (e.shiftKey) return;
+
     const url = headerContent.cta_url || settings.header_cta_url || "#contact";
     setIsMenuOpen(false);
+    
     if (url.startsWith('#')) {
-      e.preventDefault();
       const targetId = url.substring(1);
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+      const target = document.getElementById(targetId);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -44,41 +42,33 @@ function Header({ siteSettings: initialSettings = {} }) {
         <Link to="/" className="flex items-center gap-4 group" onClick={() => setIsMenuOpen(false)}>
           {settings.header_show_logo !== false && (
             <div className="relative w-12 h-12 overflow-hidden transition-transform duration-500">
-              <EditableMedia
+              <img
                 src={displayLogo}
-                cmsBind={{ file: '_site_settings', index: 0, key: 'site_logo_image' }}
                 className="w-full h-full object-contain"
-                fallback={logoChar}
+                data-dock-type="media"
+                data-dock-bind="_site_settings.0.site_logo_image"
               />
             </div>
           )}
-
-          <div className="flex flex-col">
-            {settings.header_show_title !== false && (
-              <span className="text-2xl font-serif font-black tracking-tight text-primary leading-none mb-1">
-                <EditableText value={siteName} cmsBind={{ file: 'header', index: 0, key: 'titel' }} />
-              </span>
-            )}
-            {settings.header_show_tagline !== false && slogan && (
-              <span className="text-[10px] uppercase tracking-[0.3em] text-accent font-bold opacity-80">
-                <EditableText value={slogan} cmsBind={{ file: 'header', index: 0, key: 'slogan' }} />
-              </span>
-            )}
-          </div>
+          <span 
+            className="text-2xl font-serif font-bold tracking-widest text-[var(--color-title)]"
+            data-dock-type="text"
+            data-dock-bind="_site_settings.0.site_name"
+          >
+            {logoText}
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {settings.header_show_button !== false && (
-            <EditableLink
-              as="button"
-              label={headerContent.cta_label || settings.header_cta_label || "Contact"}
-              url={headerContent.cta_url || settings.header_cta_url || "#contact"}
-              table="header"
-              field="cta"
-              id={0}
-              className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-accent transition-colors"
+            <button
               onClick={handleScroll}
-            />
+              className="bg-[var(--color-button-bg)] text-white px-6 py-2 rounded-full font-bold hover:opacity-90 transition-all"
+              data-dock-type="link"
+              data-dock-bind="header.0.cta_label"
+            >
+              {headerContent.cta_label || "Contact"}
+            </button>
           )}
         </div>
 
@@ -87,25 +77,24 @@ function Header({ siteSettings: initialSettings = {} }) {
         </button>
       </div>
 
+      {/* Mobile Menu */}
       <div className={`fixed inset-x-0 top-[var(--header-height,80px)] bg-white border-b border-gray-100 shadow-xl md:hidden transition-all duration-300 ease-in-out origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}>
         <div className="p-6 flex flex-col gap-4">
           <Link to="/" className="text-lg font-bold text-primary py-2 border-b border-slate-50" onClick={() => setIsMenuOpen(false)}>Home</Link>
           {settings.header_show_button !== false && (
-            <EditableLink
-              as="button"
-              label={headerContent.cta_label || "Contact"}
-              url={headerContent.cta_url || "#contact"}
-              table="header"
-              field="cta"
-              id={0}
-              className="w-full bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-accent transition-colors text-center mt-2"
+            <button
               onClick={handleScroll}
-            />
+              className="w-full bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-accent transition-colors text-center mt-2"
+              data-dock-type="link"
+              data-dock-bind="header.0.cta_label"
+            >
+              {headerContent.cta_label || "Contact"}
+            </button>
           )}
         </div>
       </div>
     </nav>
   );
-}
+};
 
 export default Header;

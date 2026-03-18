@@ -1,8 +1,7 @@
 [
   {
-    "titel": "Athena Promo",
-    "hero_header": "Krachtige Websites voor Moderne Merken",
-    "hero_sub_tekst": "Wij bouwen websites die zichzelf beheren via Google Sheets.",
+    "titel": "Krachtige Websites voor Moderne Merken",
+    "ondertitel": "Wij bouwen websites die zichzelf beheren via Google Sheets.",
     "hero_afbeelding": "https://picsum.photos/1920/1080",
     "cta_label": "Start Vandaag",
     "cta_url": "#voordelen"

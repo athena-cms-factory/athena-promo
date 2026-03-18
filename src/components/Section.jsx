@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import Hero from './Hero';
 import AboutSection from './AboutSection'; // Voor 'intro'
+import Contact from './Contact';
 import CTA from './CTA';
 import Testimonials from './Testimonials';
 import Team from './Team';
@@ -11,6 +12,7 @@ import GenericSection from './GenericSection';
 const SECTION_COMPONENTS = {
   hero: Hero,
   intro: AboutSection,
+  contact: Contact,
   voordelen: GenericSection,
   showcase: GenericSection,
   innovatie: GenericSection,

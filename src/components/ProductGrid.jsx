@@ -1,6 +1,4 @@
 import React from 'react';
-import EditableMedia from './EditableMedia';
-import EditableText from './EditableText';
 import { useCart } from './CartContext';
 
 const ProductGrid = ({ data, sectionName, features = {} }) => {
@@ -27,12 +25,12 @@ const ProductGrid = ({ data, sectionName, features = {} }) => {
                         return (
                             <article key={index} className="flex flex-col bg-surface rounded-[2.5rem] shadow-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl group border border-slate-100">
                                 <div className="aspect-square overflow-hidden flex-shrink-0 relative">
-                                    <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <img src={item[imgKey]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
                                 <div className="p-8 flex flex-col flex-grow text-center">
                                     <h3 className="text-2xl font-bold mb-4 text-primary min-h-[4rem] flex items-center justify-center">
-                                        <EditableText value={item[titleKey]} cmsBind={{ file: sectionName, index, key: titleKey }} />
+                                        <span data-dock-type="text" data-dock-bind={`sectionName.0.titleKey`}>{item[titleKey]}</span>
                                     </h3>
                                     <div className="text-accent font-bold mt-auto text-3xl mb-6">€{priceValue.toFixed(2)}</div>
                                     <div className="flex flex-col gap-3">

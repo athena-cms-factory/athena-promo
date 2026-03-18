@@ -1,5 +1,4 @@
 import React from 'react';
-import EditableText from './EditableText';
 
 const AboutSection = ({ data }) => {
   if (!data || data.length === 0) return null;
@@ -38,15 +37,9 @@ const AboutSection = ({ data }) => {
               Over Ons
             </h2>
             <div className={`h-1 w-20 bg-accent mb-8 ${imgSrc ? '' : 'mx-auto'}`}></div>
-            <EditableText
-              tag="p"
-              table="bedrijfsinformatie"
-              id={0}
-              field={missieField}
-              className="text-lg leading-relaxed text-slate-700 dark:text-slate-300"
-            >
+            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">
               {missie}
-            </EditableText>
+            </span>
           </div>
         </div>
       </div>

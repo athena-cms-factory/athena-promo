@@ -1,7 +1,4 @@
 import React from 'react';
-import EditableMedia from './EditableMedia';
-import EditableText from './EditableText';
-import EditableLink from './EditableLink';
 
 const CTA = ({ data, sectionName }) => {
     if (!data || data.length === 0) return null;
@@ -16,7 +13,7 @@ const CTA = ({ data, sectionName }) => {
         <section id={sectionName} data-dock-section={sectionName} className="py-32 px-6 relative overflow-hidden flex items-center justify-center text-center">
             {bgKey && item[bgKey] ? (
                 <div className="absolute inset-0 z-0">
-                    <EditableMedia src={item[bgKey]} cmsBind={{ file: sectionName, index: 0, key: bgKey }} className="w-full h-full object-cover" />
+                    <img src={item[bgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.0.bgKey`} />
                     <div className="absolute inset-0 bg-primary/80 mix-blend-multiply"></div>
                 </div>
             ) : (
@@ -25,21 +22,14 @@ const CTA = ({ data, sectionName }) => {
 
             <div className="relative z-10 max-w-4xl mx-auto text-white">
                 <h2 className="text-4xl md:text-6xl font-serif font-bold mb-8 leading-tight">
-                    <EditableText value={item[titelKey]} cmsBind={{ file: sectionName, index: 0, key: titelKey }} />
+                    <span data-dock-type="text" data-dock-bind={`sectionName.0.titelKey`}>{item[titelKey]}</span>
                 </h2>
                 {tekstKey && (
                     <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed">
-                        <EditableText value={item[tekstKey]} cmsBind={{ file: sectionName, index: 0, key: tekstKey }} />
+                        <span data-dock-type="text" data-dock-bind={`sectionName.0.tekstKey`}>{item[tekstKey]}</span>
                     </p>
                 )}
-                <EditableLink
-                    label={item[btnKey] || "Start Nu"}
-                    url={item[urlKey] || "#contact"}
-                    table={sectionName}
-                    field="link"
-                    id={0}
-                    className="bg-white text-primary px-12 py-5 rounded-full text-xl font-bold shadow-2xl hover:bg-accent hover:text-white transition-all transform hover:scale-105 inline-block"
-                />
+                <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
             </div>
         </section>
     );

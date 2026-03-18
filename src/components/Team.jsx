@@ -1,6 +1,4 @@
 import React from 'react';
-import EditableMedia from './EditableMedia';
-import EditableText from './EditableText';
 
 const Team = ({ data, sectionName }) => {
     if (!data || data.length === 0) return null;
@@ -22,17 +20,17 @@ const Team = ({ data, sectionName }) => {
                         return (
                             <div key={index} className="flex flex-col items-center text-center group">
                                 <div className="w-48 h-48 rounded-full overflow-hidden mb-6 border-4 border-white shadow-2xl group-hover:scale-105 transition-transform duration-300 ring-4 ring-transparent hover:ring-accent/30 relative">
-                                    <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
+                                    <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
                                 </div>
                                 <h3 className="text-xl font-bold text-primary mb-1">
-                                    <EditableText value={item[naamKey]} cmsBind={{ file: sectionName, index, key: naamKey }} />
+                                    <span data-dock-type="text" data-dock-bind={`sectionName.0.naamKey`}>{item[naamKey]}</span>
                                 </h3>
                                 <div className="text-sm font-bold text-accent uppercase tracking-widest mb-4">
-                                    <EditableText value={item[rolKey]} cmsBind={{ file: sectionName, index, key: rolKey }} />
+                                    <span data-dock-type="text" data-dock-bind={`sectionName.0.rolKey`}>{item[rolKey]}</span>
                                 </div>
                                 {bioKey && (
                                     <p className="text-slate-600 text-sm leading-relaxed max-w-xs mx-auto">
-                                        <EditableText value={item[bioKey]} cmsBind={{ file: sectionName, index, key: bioKey }} />
+                                        <span data-dock-type="text" data-dock-bind={`sectionName.0.bioKey`}>{item[bioKey]}</span>
                                     </p>
                                 )}
                             </div>
